@@ -27,7 +27,6 @@ module "vpc" {
 
 module "eks" {
   source = "../../modules/1-eks"
-  # version        = "1.0.0" ###
 
   name           = "dev-cluster"
   eksversion     = "1.30"  # or your preferred EKS version
