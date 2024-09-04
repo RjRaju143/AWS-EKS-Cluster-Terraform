@@ -1,5 +1,8 @@
 #!/bin/sh
 
+set -e
+set -x
+
 ENVIRONMENT="dev"
 
 cd environments/$ENVIRONMENT
