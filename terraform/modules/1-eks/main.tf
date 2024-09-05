@@ -34,6 +34,11 @@ resource "aws_eks_cluster" "eks" {
     subnet_ids = var.subnet_ids
   }
 
+  access_config {
+    authentication_mode                         = "API"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
+
   depends_on = [aws_iam_role_policy_attachment.eks]
 }
 
@@ -107,212 +112,177 @@ resource "aws_eks_node_group" "general" {
   }
 }
 
-///// TODO: add dev-user
-# resource "aws_iam_user" "developer" {
-#   name = "developer"
+//// TODO: update as module structure
+# /// helm-provider for eks cluster
+# data "aws_eks_cluster" "eks" {
+#   name = aws_eks_cluster.eks.name
 # }
 
-# resource "aws_iam_policy" "developer_eks" {
-#   name = "AmazonEKSDeveloperPolicy"
+# data "aws_eks_cluster_auth" "eks" {
+#   name = aws_eks_cluster.eks.name
+# }
 
-#   policy = <<POLICY
-# {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Effect": "Allow",
-#             "Action": [
-#                 "eks:DescribeCluster",
-#                 "eks:ListClusters"
-#             ],
-#             "Resource": "*"
+# provider "helm" {
+#   kubernetes {
+#     host                   = data.aws_eks_cluster.eks.endpoint
+#     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+#     token                  = data.aws_eks_cluster_auth.eks.token
+#   }
+# }
+
+# ///  metrics_server
+# resource "helm_release" "metrics_server" {
+#   name = "metrics-server"
+
+#   repository = "https://kubernetes-sigs.github.io/metrics-server/"
+#   chart      = "metrics-server"
+#   namespace  = "kube-system"
+#   version    = "3.12.1"
+
+#   values = [file("${path.module}/values/metrics-server.yaml")]
+
+#   depends_on = [aws_eks_node_group.general]
+# }
+
+# /// pod_identity addon
+# resource "aws_eks_addon" "pod_identity" {
+#   cluster_name  = aws_eks_cluster.eks.name
+#   addon_name    = "eks-pod-identity-agent"
+#   addon_version = "v1.3.0-eksbuild.1"
+# }
+
+# /// Cluster Auto Scaler
+# resource "aws_iam_role" "cluster_autoscaler" {
+#   name = "${aws_eks_cluster.eks.name}-cluster-autoscaler"
+
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "sts:AssumeRole",
+#           "sts:TagSession"
+#         ]
+#         Principal = {
+#           Service = "pods.eks.amazonaws.com"
 #         }
+#       }
 #     ]
-# }
-# POLICY
-# }
-
-# resource "aws_iam_user_policy_attachment" "developer_eks" {
-#   user       = aws_iam_user.developer.name
-#   policy_arn = aws_iam_policy.developer_eks.arn
+#   })
 # }
 
-# resource "aws_eks_access_entry" "developer" {
-#   cluster_name      = aws_eks_cluster.eks.name
-#   principal_arn     = aws_iam_user.developer.arn
-#   kubernetes_groups = ["my-viewer"]
+# resource "aws_iam_policy" "cluster_autoscaler" {
+#   name = "${aws_eks_cluster.eks.name}-cluster-autoscaler"
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "autoscaling:DescribeAutoScalingGroups",
+#           "autoscaling:DescribeAutoScalingInstances",
+#           "autoscaling:DescribeLaunchConfigurations",
+#           "autoscaling:DescribeScalingActivities",
+#           "autoscaling:DescribeTags",
+#           "ec2:DescribeImages",
+#           "ec2:DescribeInstanceTypes",
+#           "ec2:DescribeLaunchTemplateVersions",
+#           "ec2:GetInstanceTypesFromInstanceRequirements",
+#           "eks:DescribeNodegroup"
+#         ]
+#         Resource = "*"
+#       },
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "autoscaling:SetDesiredCapacity",
+#           "autoscaling:TerminateInstanceInAutoScalingGroup"
+#         ]
+#         Resource = "*"
+#       },
+#     ]
+#   })
 # }
 
-/// helm-provider for eks cluster
-data "aws_eks_cluster" "eks" {
-  name = aws_eks_cluster.eks.name
-}
+# resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
+#   policy_arn = aws_iam_policy.cluster_autoscaler.arn
+#   role       = aws_iam_role.cluster_autoscaler.name
+# }
 
-data "aws_eks_cluster_auth" "eks" {
-  name = aws_eks_cluster.eks.name
-}
+# resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
+#   cluster_name    = aws_eks_cluster.eks.name
+#   namespace       = "kube-system"
+#   service_account = "cluster-autoscaler"
+#   role_arn        = aws_iam_role.cluster_autoscaler.arn
+# }
 
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.eks.token
-  }
-}
+# resource "helm_release" "cluster_autoscaler" {
+#   name = "autoscaler"
 
-///  metrics_server
-resource "helm_release" "metrics_server" {
-  name = "metrics-server"
+#   repository = "https://kubernetes.github.io/autoscaler"
+#   chart      = "cluster-autoscaler"
+#   namespace  = "kube-system"
+#   version    = "9.37.0"
 
-  repository = "https://kubernetes-sigs.github.io/metrics-server/"
-  chart      = "metrics-server"
-  namespace  = "kube-system"
-  version    = "3.12.1"
+#   set {
+#     name  = "rbac.serviceAccount.name"
+#     value = "cluster-autoscaler"
+#   }
 
-  values = [file("${path.module}/values/metrics-server.yaml")]
+#   set {
+#     name  = "autoDiscovery.clusterName"
+#     value = aws_eks_cluster.eks.name
+#   }
 
-  depends_on = [aws_eks_node_group.general]
-}
+#   # MUST be updated to match your region 
+#   set {
+#     name  = "awsRegion"
+#     value = "ap-south-1"
+#   }
 
-/// pod_identity addon
-resource "aws_eks_addon" "pod_identity" {
-  cluster_name  = aws_eks_cluster.eks.name
-  addon_name    = "eks-pod-identity-agent"
-  addon_version = "v1.3.0-eksbuild.1"
-}
+#   depends_on = [helm_release.metrics_server]
+# }
 
-/// Cluster Auto Scaler
-resource "aws_iam_role" "cluster_autoscaler" {
-  name = "${aws_eks_cluster.eks.name}-cluster-autoscaler"
+# /// ebs-csi-driver
+# data "aws_iam_policy_document" "ebs_csi_driver" {
+#   statement {
+#     effect = "Allow"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "sts:AssumeRole",
-          "sts:TagSession"
-        ]
-        Principal = {
-          Service = "pods.eks.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
+#     principals {
+#       type        = "Service"
+#       identifiers = ["pods.eks.amazonaws.com"]
+#     }
 
-resource "aws_iam_policy" "cluster_autoscaler" {
-  name = "${aws_eks_cluster.eks.name}-cluster-autoscaler"
+#     actions = [
+#       "sts:AssumeRole",
+#       "sts:TagSession"
+#     ]
+#   }
+# }
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "autoscaling:DescribeAutoScalingGroups",
-          "autoscaling:DescribeAutoScalingInstances",
-          "autoscaling:DescribeLaunchConfigurations",
-          "autoscaling:DescribeScalingActivities",
-          "autoscaling:DescribeTags",
-          "ec2:DescribeImages",
-          "ec2:DescribeInstanceTypes",
-          "ec2:DescribeLaunchTemplateVersions",
-          "ec2:GetInstanceTypesFromInstanceRequirements",
-          "eks:DescribeNodegroup"
-        ]
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "autoscaling:SetDesiredCapacity",
-          "autoscaling:TerminateInstanceInAutoScalingGroup"
-        ]
-        Resource = "*"
-      },
-    ]
-  })
-}
+# resource "aws_iam_role" "ebs_csi_driver" {
+#   name               = "${aws_eks_cluster.eks.name}-ebs-csi-driver"
+#   assume_role_policy = data.aws_iam_policy_document.ebs_csi_driver.json
+# }
 
-resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
-  policy_arn = aws_iam_policy.cluster_autoscaler.arn
-  role       = aws_iam_role.cluster_autoscaler.name
-}
+# resource "aws_iam_role_policy_attachment" "ebs_csi_driver" {
+#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+#   role       = aws_iam_role.ebs_csi_driver.name
+# }
 
-resource "aws_eks_pod_identity_association" "cluster_autoscaler" {
-  cluster_name    = aws_eks_cluster.eks.name
-  namespace       = "kube-system"
-  service_account = "cluster-autoscaler"
-  role_arn        = aws_iam_role.cluster_autoscaler.arn
-}
+# resource "aws_eks_pod_identity_association" "ebs_csi_driver" {
+#   cluster_name    = aws_eks_cluster.eks.name
+#   namespace       = "kube-system"
+#   service_account = "ebs-csi-controller-sa"
+#   role_arn        = aws_iam_role.ebs_csi_driver.arn
+# }
 
-resource "helm_release" "cluster_autoscaler" {
-  name = "autoscaler"
-
-  repository = "https://kubernetes.github.io/autoscaler"
-  chart      = "cluster-autoscaler"
-  namespace  = "kube-system"
-  version    = "9.37.0"
-
-  set {
-    name  = "rbac.serviceAccount.name"
-    value = "cluster-autoscaler"
-  }
-
-  set {
-    name  = "autoDiscovery.clusterName"
-    value = aws_eks_cluster.eks.name
-  }
-
-  # MUST be updated to match your region 
-  set {
-    name  = "awsRegion"
-    value = "ap-south-1"
-  }
-
-  depends_on = [helm_release.metrics_server]
-}
-
-/// ebs-csi-driver
-data "aws_iam_policy_document" "ebs_csi_driver" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["pods.eks.amazonaws.com"]
-    }
-
-    actions = [
-      "sts:AssumeRole",
-      "sts:TagSession"
-    ]
-  }
-}
-
-resource "aws_iam_role" "ebs_csi_driver" {
-  name               = "${aws_eks_cluster.eks.name}-ebs-csi-driver"
-  assume_role_policy = data.aws_iam_policy_document.ebs_csi_driver.json
-}
-
-resource "aws_iam_role_policy_attachment" "ebs_csi_driver" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-  role       = aws_iam_role.ebs_csi_driver.name
-}
-
-resource "aws_eks_pod_identity_association" "ebs_csi_driver" {
-  cluster_name    = aws_eks_cluster.eks.name
-  namespace       = "kube-system"
-  service_account = "ebs-csi-controller-sa"
-  role_arn        = aws_iam_role.ebs_csi_driver.arn
-}
-
-resource "aws_eks_addon" "ebs_csi_driver" {
-  cluster_name             = aws_eks_cluster.eks.name
-  addon_name               = "aws-ebs-csi-driver"
-  addon_version            = "v1.33.0-eksbuild.1"
-  service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
-}
+# resource "aws_eks_addon" "ebs_csi_driver" {
+#   cluster_name             = aws_eks_cluster.eks.name
+#   addon_name               = "aws-ebs-csi-driver"
+#   addon_version            = "v1.33.0-eksbuild.1"
+#   service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
+# }
 
