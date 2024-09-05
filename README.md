@@ -44,6 +44,7 @@
 - **Create `kubeconfig.yaml` File to Access Cluster with Root Profile:**
 
   ```sh
+  # aws eks update-kubeconfig --region <region> --name <cluster-name>
   aws eks update-kubeconfig --region ap-south-1 --name dev-cluster
   ```
 
@@ -52,7 +53,7 @@
   kubectl auth can-i "*" "*"
   ```
 
-<!-- ### Configure Access for Developer User
+### Configure Access for Developer User
 
 1. **Create New Access and Secret Keys Using IAM (for Developer User Created by Terraform Code):**
    - Navigate to IAM in the AWS Console and create new access and secret keys for the developer user.
@@ -65,14 +66,14 @@
 3. **Verify Developer Profile Configuration: `(optional)`**
    ```sh
    aws sts get-caller-identity --profile dev
-   ``` -->
+   ```
 
-<!-- ### Configure Kubeconfig for Developer Profile
+### Configure Kubeconfig for Developer Profile
 
 1. **Create `kubeconfig.yaml` File to Access Cluster with Developer Profile:**
    ```sh
    aws eks update-kubeconfig --region ap-south-1 --name dev-cluster --profile dev
-   ``` -->
+   ```
 
 ### Destroy Kubernetes Cluster
 
@@ -80,13 +81,13 @@
    ```sh
    terraform destroy -auto-approve
    ```
-   <!-- - **NOTE:** Before destroying the cluster delete Access and Secret Keys on IAM user manualy. -->
+   - **NOTE:** Before destroying the cluster delete Access and Secret Keys on IAM user manualy.
 
 
 ### **Run shell Script to automate above the process**
   ```sh
   ## change dir to env ..
-  cd environments/dev
+  cd terraform/
   chmod +x run.sh
   ./run.sh
   ```
@@ -107,43 +108,12 @@
 
 
 
-<!--
-resource "aws_eks_cluster" "eks" {
-  name     = "${local.env}-${local.eks_name}"
-  version  = local.eks_version
-  role_arn = aws_iam_role.eks.arn
-
-  vpc_config {
-    endpoint_private_access = false
-    endpoint_public_access  = true
-
-    subnet_ids = [
-      aws_subnet.private_zone1.id,
-      aws_subnet.private_zone2.id
-    ]
-  }
-
-  access_config {
-    authentication_mode                         = "API"
-    bootstrap_cluster_creator_admin_permissions = true
-  }
-
-  depends_on = [aws_iam_role_policy_attachment.eks]
-}
--->
-
 <!-- 
 [ 
-    access_config on aws_eks_cluster,
-    create a dev-user and admin-user for eks,
-    check storage drivers EDS, EFS,
+    create a admin-user for eks,
     check LoadBalancer
+    check storage drivers EDS, EFS,
 ]
 --->
-
-
-
-
-
 
 
