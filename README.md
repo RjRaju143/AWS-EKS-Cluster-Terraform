@@ -132,6 +132,15 @@ resource "aws_eks_cluster" "eks" {
 }
 -->
 
+<!-- 
+[ 
+    access_config on aws_eks_cluster,
+    create a dev-user and admin-user for eks,
+    check storage drivers EDS, EFS,
+    check LoadBalancer
+]
+--->
+
 
 
 
