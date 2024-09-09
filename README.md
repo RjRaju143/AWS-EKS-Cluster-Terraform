@@ -53,6 +53,8 @@
   kubectl auth can-i "*" "*"
   ```
 
+---
+
 ### Configure Access for Developer User
 
 1. **Create New Access and Secret Keys Using IAM (for Developer User Created by Terraform Code):**
@@ -68,12 +70,46 @@
    aws sts get-caller-identity --profile dev
    ```
 
+---
+
 ### Configure Kubeconfig for Developer Profile
 
-1. **Create `kubeconfig.yaml` File to Access Cluster with Developer Profile:**
+- **Create `kubeconfig.yaml` File to Access Cluster with Developer Profile:**
    ```sh
    aws eks update-kubeconfig --region ap-south-1 --name dev-cluster --profile dev
    ```
+
+---
+
+### Configure Access for Cluster Admin User
+
+- Create New Access and Secret Keys for Admin User
+- Navigate to the IAM section in the AWS Console.
+- Generate new Access and Secret keys for the Admin user (created via Terraform).
+
+1. Configure AWS CLI for Manager Profile
+   ```bash
+   aws configure --profile manager
+   ```
+
+2. Check if You Have Proper Admin Permissions
+   ```bash
+   # aws sts assume-role --role-arn <arn-id> --role-session-name manager-session --profile <profile-name>
+   aws sts assume-role --role-arn arn:aws:iam::654654428184:role/dev-cluster-eks-admin --role-session-name manager-session --profile manager
+   ```
+
+3. Edit Manualy .aws/config file.
+   ```sh
+   [profile eks-admin]
+   role_arn = arn:aws:iam::654654428184:role/dev-cluster-eks-admin
+   source_profile = manager
+   ```
+4. **Create `kubeconfig.yaml` File to Access Cluster with Admin Profile:**
+   ```sh
+   aws eks update-kubeconfig --region ap-south-1 --name dev-cluster --profile eks-admin
+   ```
+
+---
 
 ### Destroy Kubernetes Cluster
 
@@ -85,34 +121,18 @@
 
 
 ### **Run shell Script to automate above the process**
-  ```sh
-  ## change dir to env ..
-  cd terraform/
-  chmod +x run.sh
-  ./run.sh
-  ```
-
-
-
-<!-- ### To Find Addon Versions
-
-1. **Enter the below command**
-
    ```sh
-   aws eks describe-addon-versions --region ap-south-1 --addon-name eks-pod-identity-agent
+   ## change dir to env ..
+   cd terraform/
+   chmod +x run.sh
+   ./run.sh
    ```
-   - Update the `addon_version` on `13-pod-identity-addon.tf` file
-
- -->
-
-
 
 
 <!-- 
 [ 
-    create a admin-user for eks,
-    check LoadBalancer
-    check storage drivers EDS, EFS,
+    check storage drivers EFS,
+    File system & module structure
 ]
 --->
 
