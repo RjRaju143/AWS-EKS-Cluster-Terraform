@@ -1,18 +1,3 @@
-provider "aws" {
-  region = "ap-south-1" # or your preferred region
-}
-
-terraform {
-  required_version = ">=1.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.49"
-    }
-  }
-}
-
 locals {
   region              = "ap-south-1"
   vpc_name            = "dev-main"
@@ -62,11 +47,13 @@ module "metrics_server" {
 
   cluster_name = local.cluster_name
 
+  # depends_on = [ module.eks ]
+
   # depends_on   = [module.eks.aws_eks_node_group.general]
 }
 
-module "clustterAutoScale" {
-  source = "../../modules/6-clustterAutoScale"
+module "clusterAutoScale" {
+  source = "../../modules/6-clusterAutoScale"
 
   cluster_autoscaler_name = "${local.cluster_name}-cluster-autoscaler"
   cluster_name            = local.cluster_name

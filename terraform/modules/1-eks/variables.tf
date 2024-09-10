@@ -45,5 +45,9 @@ variable "public_zone2" {
   # subnet_id       = aws_subnet.private_zone1.id
 }
 
-
+variable "node_group_name" {
+  description = "node group name"
+  type        = string
+  default     = "general"
+}
 
