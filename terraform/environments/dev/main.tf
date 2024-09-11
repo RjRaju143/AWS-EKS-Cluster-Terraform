@@ -1,18 +1,3 @@
-provider "aws" {
-  region = "ap-south-1" # or your preferred region
-}
-
-terraform {
-  required_version = ">=1.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.49"
-    }
-  }
-}
-
 locals {
   region              = "ap-south-1"
   vpc_name            = "dev-main"
@@ -44,51 +29,15 @@ module "vpc" {
 module "eks" {
   source = "../../modules/1-eks"
 
-  name           = local.cluster_name
-  eksversion     = local.cluster_version
-  subnet_ids     = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
-  instance_types = local.instance_types
-  public_zone1   = module.vpc.public_subnet1_id
-  public_zone2   = module.vpc.public_subnet2_id
-  desired_size   = 1
-  max_size       = 3
-  min_size       = 1
+  name            = local.cluster_name
+  eksversion      = local.cluster_version
+  subnet_ids      = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+  public_zone1    = module.vpc.public_subnet1_id
+  public_zone2    = module.vpc.public_subnet2_id
+  desired_size    = 1
+  max_size        = 3
+  min_size        = 1
 
+  instance_types  = local.instance_types
   node_group_name = local.node_group_name
-}
-
-module "metrics_server" {
-  source = "../../modules/5-metricServer"
-
-  cluster_name = local.cluster_name
-
-  # depends_on   = [module.eks.aws_eks_node_group.general]
-}
-
-module "clustterAutoScale" {
-  source = "../../modules/6-clustterAutoScale"
-
-  cluster_autoscaler_name = "${local.cluster_name}-cluster-autoscaler"
-  cluster_name            = local.cluster_name
-  region                  = local.region
-  # depends_on = [moodule.eks.helm_release.metrics_server]
-}
-
-module "ebs-csi" {
-  source = "../../modules/2-ebs-csi"
-
-  cluster_name = local.cluster_name
-
-  depends_on = [module.eks]
-}
-
-module "admin-user" {
-  source = "../../modules/4-admin-user"
-
-  cluster_name        = local.cluster_name
-  eks_admin           = "${local.cluster_name}-eks_admin"
-  admin_iam_user_name = local.admin_iam_user_name
-  kubernetes_groups   = local.kubernetes_groups
-
-  depends_on = [module.eks]
 }
