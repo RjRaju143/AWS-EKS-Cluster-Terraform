@@ -98,7 +98,7 @@
    aws configure --profile manager
    ```
 
-2. Check if You Have Proper Admin Permissions
+2. Check if You Have Proper Admin Permissions (Optional)
 
    ```bash
    # aws sts assume-role --role-arn <arn-id> --role-session-name manager-session --profile <profile-name>
@@ -131,7 +131,6 @@
 
    - **NOTE:** Before destroying the cluster delete Access and Secret Keys on IAM user manualy.
 
-
 ### **Run shell Script to automate above the process**
 
    ```sh
@@ -144,7 +143,7 @@
 
 <!-- 
 [ 
-    check storage drivers EFS,
+    Admin User & Dev User
     File system & module structure
 ]
 --->

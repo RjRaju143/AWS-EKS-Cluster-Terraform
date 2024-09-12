@@ -10,7 +10,7 @@ locals {
   cluster_version     = "1.30" # or your preferred EKS version
   instance_types      = ["t2.small"]
   admin_iam_user_name = "manager"
-  kubernetes_groups   = ["my-admin"]
+  kubernetes_group_name   = ["my-admin"]
   node_group_name     = "general"
 }
 
@@ -40,4 +40,5 @@ module "eks" {
 
   instance_types  = local.instance_types
   node_group_name = local.node_group_name
+  kubernetes_group_name = local.kubernetes_group_name
 }

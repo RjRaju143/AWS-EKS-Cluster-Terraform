@@ -5,7 +5,7 @@ set -e
 set -x
 
 # Define the environment variable
-ENVIRONMENT="testing"
+ENVIRONMENT="dev"
 WORKING_DIR="environments/$ENVIRONMENT"
 
 # Check if the environment directory exists

@@ -51,3 +51,9 @@ variable "node_group_name" {
   default     = "general"
 }
 
+variable "kubernetes_group_name" {
+  description = "EKS group name"
+  type        = list(string)
+  default     = ["my-admin"]
+}
+
