@@ -57,3 +57,7 @@ variable "kubernetes_group_name" {
   default     = ["my-admin"]
 }
 
+# variable "region" {
+#   description = "awsRegion cluster_autoscaler"
+#   type        = string
+# }
