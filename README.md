@@ -57,36 +57,6 @@
 
 ---
 
-### Configure Access for Developer User
-
-1. **Create New Access and Secret Keys Using IAM (for Developer User Created by Terraform Code):**
-
-   - Navigate to IAM in the AWS Console and create new access and secret keys for the developer user.
-
-2. **Configure AWS CLI with New Developer Profile:**
-
-   ```sh
-   aws configure --profile dev
-   ```
-
-3. **Verify Developer Profile Configuration: `(optional)`**
-
-   ```sh
-   aws sts get-caller-identity --profile dev
-   ```
-
----
-
-### Configure Kubeconfig for Developer Profile
-
-- **Create `kubeconfig.yaml` File to Access Cluster with Developer Profile:**
-
-  ```sh
-  aws eks update-kubeconfig --region ap-south-1 --name dev-cluster --profile dev
-  ```
-
----
-
 ### Configure Access for Cluster Admin User
 
 - Create custom Role Binding
@@ -140,7 +110,7 @@
   terraform destroy -auto-approve
   ```
 
-  - **NOTE:** Before destroying the cluster delete Access and Secret Keys on IAM user manualy.
+  - **NOTE:** Before destroying the cluster delete Access and Secret Keys on manager IAM user manualy.
 
 ### **Run shell Script to automate above the process**
 

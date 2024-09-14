@@ -130,7 +130,7 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.eks.token
   }
 }
-
+#################
 ###  metrics_server
 resource "helm_release" "metrics_server" {
   name = "metrics-server"
@@ -240,16 +240,15 @@ resource "helm_release" "cluster_autoscaler" {
   # MUST be updated to match your region 
   set {
     name  = "awsRegion"
-    value = "ap-south-1"
-    # value = var.region
+    # value = "ap-south-1"
+    value = var.awsRegion
   }
 
   depends_on = [helm_release.metrics_server]
 }
 
-###################################
-
-### ADD Manager Role
+##################################
+## ADD Manager Role
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "eks_admin" {
@@ -306,7 +305,8 @@ resource "aws_iam_role_policy_attachment" "eks_admin" {
 }
 
 resource "aws_iam_user" "manager" {
-  name = "manager"
+  # name = "manager"
+  name = var.admin_user_name
 }
 
 resource "aws_iam_policy" "eks_assume_admin" {
@@ -342,167 +342,167 @@ resource "aws_eks_access_entry" "manager" {
 }
 
 //////////////////////////////
-# ### ebs-csi-driver
-# data "aws_iam_policy_document" "ebs_csi_driver" {
-#   statement {
-#     effect = "Allow"
+### ebs-csi-driver
+data "aws_iam_policy_document" "ebs_csi_driver" {
+  statement {
+    effect = "Allow"
 
-#     principals {
-#       type        = "Service"
-#       identifiers = ["pods.eks.amazonaws.com"]
-#     }
+    principals {
+      type        = "Service"
+      identifiers = ["pods.eks.amazonaws.com"]
+    }
 
-#     actions = [
-#       "sts:AssumeRole",
-#       "sts:TagSession"
-#     ]
-#   }
-# }
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession"
+    ]
+  }
+}
 
-# resource "aws_iam_role" "ebs_csi_driver" {
-#   name               = "${aws_eks_cluster.eks.name}-ebs-csi-driver"
-#   assume_role_policy = data.aws_iam_policy_document.ebs_csi_driver.json
-# }
+resource "aws_iam_role" "ebs_csi_driver" {
+  name               = "${aws_eks_cluster.eks.name}-ebs-csi-driver"
+  assume_role_policy = data.aws_iam_policy_document.ebs_csi_driver.json
+}
 
-# resource "aws_iam_role_policy_attachment" "ebs_csi_driver" {
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-#   role       = aws_iam_role.ebs_csi_driver.name
-# }
+resource "aws_iam_role_policy_attachment" "ebs_csi_driver" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.ebs_csi_driver.name
+}
 
-# resource "aws_eks_pod_identity_association" "ebs_csi_driver" {
-#   cluster_name    = aws_eks_cluster.eks.name
-#   namespace       = "kube-system"
-#   service_account = "ebs-csi-controller-sa"
-#   role_arn        = aws_iam_role.ebs_csi_driver.arn
-# }
+resource "aws_eks_pod_identity_association" "ebs_csi_driver" {
+  cluster_name    = aws_eks_cluster.eks.name
+  namespace       = "kube-system"
+  service_account = "ebs-csi-controller-sa"
+  role_arn        = aws_iam_role.ebs_csi_driver.arn
+}
 
-# resource "aws_eks_addon" "ebs_csi_driver" {
-#   cluster_name             = aws_eks_cluster.eks.name
-#   addon_name               = "aws-ebs-csi-driver"
-#   addon_version            = "v1.33.0-eksbuild.1"
-#   service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
-# }
+resource "aws_eks_addon" "ebs_csi_driver" {
+  cluster_name             = aws_eks_cluster.eks.name
+  addon_name               = "aws-ebs-csi-driver"
+  addon_version            = "v1.33.0-eksbuild.1"
+  service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
+}
 
-# //// TODO: EFS CSI
-# data "tls_certificate" "eks" {
-#   url = aws_eks_cluster.eks.identity[0].oidc[0].issuer
-# }
+#### TODO: EFS CSI
+data "tls_certificate" "eks" {
+  url = aws_eks_cluster.eks.identity[0].oidc[0].issuer
+}
 
-# resource "aws_iam_openid_connect_provider" "eks" {
-#   client_id_list  = ["sts.amazonaws.com"]
-#   thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
-#   url             = aws_eks_cluster.eks.identity[0].oidc[0].issuer
-# }
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.eks.identity[0].oidc[0].issuer
+}
 
-# resource "aws_efs_file_system" "eks" {
-#   creation_token = "eks"
+resource "aws_efs_file_system" "eks" {
+  creation_token = "eks"
 
-#   performance_mode = "generalPurpose"
-#   throughput_mode  = "bursting"
-#   encrypted        = true
+  performance_mode = "generalPurpose"
+  throughput_mode  = "bursting"
+  encrypted        = true
 
-#   # lifecycle_policy {
-#   #   transition_to_ia = "AFTER_30_DAYS"
-#   # }
-# }
+  # lifecycle_policy {
+  #   transition_to_ia = "AFTER_30_DAYS"
+  # }
+}
 
-# resource "aws_efs_mount_target" "zone_a" {
-#   file_system_id = aws_efs_file_system.eks.id
-#   # subnet_id       = aws_subnet.private_zone1.id
-#   subnet_id       = var.public_zone1
-#   security_groups = [aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
-# }
+resource "aws_efs_mount_target" "zone_a" {
+  file_system_id = aws_efs_file_system.eks.id
+  # subnet_id       = aws_subnet.private_zone1.id
+  subnet_id       = var.public_zone1
+  security_groups = [aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
+}
 
-# resource "aws_efs_mount_target" "zone_b" {
-#   file_system_id = aws_efs_file_system.eks.id
-#   # subnet_id       = aws_subnet.private_zone2.id
-#   subnet_id       = var.public_zone2
-#   security_groups = [aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
-# }
+resource "aws_efs_mount_target" "zone_b" {
+  file_system_id = aws_efs_file_system.eks.id
+  # subnet_id       = aws_subnet.private_zone2.id
+  subnet_id       = var.public_zone2
+  security_groups = [aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
+}
 
-# data "aws_iam_policy_document" "efs_csi_driver" {
-#   statement {
-#     actions = ["sts:AssumeRoleWithWebIdentity"]
-#     effect  = "Allow"
+data "aws_iam_policy_document" "efs_csi_driver" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
 
-#     condition {
-#       test     = "StringEquals"
-#       variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
-#       values   = ["system:serviceaccount:kube-system:efs-csi-controller-sa"]
-#     }
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:efs-csi-controller-sa"]
+    }
 
-#     principals {
-#       identifiers = [aws_iam_openid_connect_provider.eks.arn]
-#       type        = "Federated"
-#     }
-#   }
-# }
+    principals {
+      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+      type        = "Federated"
+    }
+  }
+}
 
-# resource "aws_iam_role" "efs_csi_driver" {
-#   name               = "${aws_eks_cluster.eks.name}-efs-csi-driver"
-#   assume_role_policy = data.aws_iam_policy_document.efs_csi_driver.json
-# }
+resource "aws_iam_role" "efs_csi_driver" {
+  name               = "${aws_eks_cluster.eks.name}-efs-csi-driver"
+  assume_role_policy = data.aws_iam_policy_document.efs_csi_driver.json
+}
 
-# resource "aws_iam_role_policy_attachment" "efs_csi_driver" {
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
-#   role       = aws_iam_role.efs_csi_driver.name
-# }
+resource "aws_iam_role_policy_attachment" "efs_csi_driver" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+  role       = aws_iam_role.efs_csi_driver.name
+}
 
-# resource "helm_release" "efs_csi_driver" {
-#   name = "aws-efs-csi-driver"
+resource "helm_release" "efs_csi_driver" {
+  name = "aws-efs-csi-driver"
 
-#   repository = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-#   chart      = "aws-efs-csi-driver"
-#   namespace  = "kube-system"
-#   version    = "3.0.3"
+  repository = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
+  chart      = "aws-efs-csi-driver"
+  namespace  = "kube-system"
+  version    = "3.0.3"
 
-#   set {
-#     name  = "controller.serviceAccount.name"
-#     value = "efs-csi-controller-sa"
-#   }
+  set {
+    name  = "controller.serviceAccount.name"
+    value = "efs-csi-controller-sa"
+  }
 
-#   set {
-#     name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-#     value = aws_iam_role.efs_csi_driver.arn
-#   }
+  set {
+    name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = aws_iam_role.efs_csi_driver.arn
+  }
 
-#   depends_on = [
-#     aws_efs_mount_target.zone_a,
-#     aws_efs_mount_target.zone_b
-#   ]
-# }
+  depends_on = [
+    aws_efs_mount_target.zone_a,
+    aws_efs_mount_target.zone_b
+  ]
+}
 
-# # Optional since we already init helm provider (just to make it self contained)
-# data "aws_eks_cluster" "eks_v2" {
-#   name = aws_eks_cluster.eks.name
-# }
+# Optional since we already init helm provider (just to make it self contained)
+data "aws_eks_cluster" "eks_v2" {
+  name = aws_eks_cluster.eks.name
+}
 
-# # Optional since we already init helm provider (just to make it self contained)
-# data "aws_eks_cluster_auth" "eks_v2" {
-#   name = aws_eks_cluster.eks.name
-# }
+# Optional since we already init helm provider (just to make it self contained)
+data "aws_eks_cluster_auth" "eks_v2" {
+  name = aws_eks_cluster.eks.name
+}
 
-# provider "kubernetes" {
-#   host                   = data.aws_eks_cluster.eks_v2.endpoint
-#   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_v2.certificate_authority[0].data)
-#   token                  = data.aws_eks_cluster_auth.eks_v2.token
-# }
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.eks_v2.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_v2.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.eks_v2.token
+}
 
-# resource "kubernetes_storage_class_v1" "efs" {
-#   metadata {
-#     name = "efs"
-#   }
+resource "kubernetes_storage_class_v1" "efs" {
+  metadata {
+    name = "efs"
+  }
 
-#   storage_provisioner = "efs.csi.aws.com"
+  storage_provisioner = "efs.csi.aws.com"
 
-#   parameters = {
-#     provisioningMode = "efs-ap"
-#     fileSystemId     = aws_efs_file_system.eks.id
-#     directoryPerms   = "700"
-#   }
+  parameters = {
+    provisioningMode = "efs-ap"
+    fileSystemId     = aws_efs_file_system.eks.id
+    directoryPerms   = "700"
+  }
 
-#   mount_options = ["iam"]
+  mount_options = ["iam"]
 
-#   depends_on = [helm_release.efs_csi_driver]
-# }
+  depends_on = [helm_release.efs_csi_driver]
+}
 

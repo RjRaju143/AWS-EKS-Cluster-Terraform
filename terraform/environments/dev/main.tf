@@ -8,7 +8,7 @@ locals {
   public_subnet2_cidr   = "10.0.96.0/19"
   cluster_name          = "dev-cluster"
   cluster_version       = "1.30" # or your preferred EKS version
-  instance_types        = ["t2.small"]
+  instance_types        = ["t2.large"]
   admin_iam_user_name   = "manager"
   kubernetes_group_name = ["my-admin"]
   node_group_name       = "general"
@@ -35,11 +35,12 @@ module "eks" {
   public_zone1          = module.vpc.public_subnet1_id
   public_zone2          = module.vpc.public_subnet2_id
   desired_size          = 1
-  max_size              = 20
+  max_size              = 10
   min_size              = 1
 
   instance_types        = local.instance_types
   node_group_name       = local.node_group_name
   kubernetes_group_name = local.kubernetes_group_name
-  # region                = local.region
+  awsRegion             = local.region
+  admin_user_name       = local.admin_iam_user_name
 }

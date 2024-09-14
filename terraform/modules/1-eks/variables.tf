@@ -57,7 +57,14 @@ variable "kubernetes_group_name" {
   default     = ["my-admin"]
 }
 
-# variable "region" {
-#   description = "awsRegion cluster_autoscaler"
-#   type        = string
-# }
+variable "awsRegion" {
+  description = "awsRegion cluster_autoscaler"
+  type        = string
+}
+
+
+variable "admin_user_name" {
+  description = "Eks Admin User name"
+  type        = string
+  default     = "manager"
+}
