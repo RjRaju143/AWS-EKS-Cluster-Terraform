@@ -60,6 +60,7 @@
 ### Configure Access for Developer User
 
 1. **Create New Access and Secret Keys Using IAM (for Developer User Created by Terraform Code):**
+
    - Navigate to IAM in the AWS Console and create new access and secret keys for the developer user.
 
 2. **Configure AWS CLI with New Developer Profile:**
@@ -80,13 +81,19 @@
 
 - **Create `kubeconfig.yaml` File to Access Cluster with Developer Profile:**
 
-   ```sh
-   aws eks update-kubeconfig --region ap-south-1 --name dev-cluster --profile dev
-   ```
+  ```sh
+  aws eks update-kubeconfig --region ap-south-1 --name dev-cluster --profile dev
+  ```
 
 ---
 
 ### Configure Access for Cluster Admin User
+
+- Create custom Role Binding
+
+```sh
+ kubectl apply -f .\cluster-user-permissions\manager-user\admin-cluster-role-binding.yaml
+```
 
 - Create New Access and Secret Keys for Admin User
 - Navigate to the IAM section in the AWS Console.
@@ -99,6 +106,8 @@
    ```
 
 2. Check if You Have Proper Admin Permissions (Optional)
+
+- Open EKS on console navigate to Access Tab note down the my-admin ARN
 
    ```bash
    # aws sts assume-role --role-arn <arn-id> --role-session-name manager-session --profile <profile-name>
@@ -121,31 +130,30 @@
 
 ---
 
+- **NOTE:** Allow ports on Security Group
+
 ### Destroy Kubernetes Cluster
 
 - **Destroy Kubernetes Cluster:**
 
-   ```sh
-   terraform destroy -auto-approve
-   ```
+  ```sh
+  terraform destroy -auto-approve
+  ```
 
-   - **NOTE:** Before destroying the cluster delete Access and Secret Keys on IAM user manualy.
+  - **NOTE:** Before destroying the cluster delete Access and Secret Keys on IAM user manualy.
 
 ### **Run shell Script to automate above the process**
 
-   ```sh
-   ## change dir to env ..
-   cd terraform/
-   chmod +x run.sh
-   ./run.sh
-   ```
+```sh
+## change dir to env ..
+cd terraform/
+chmod +x run.sh
+./run.sh
+```
 
-
-<!-- 
-[ 
-    Admin User & Dev User
-    File system & module structure
+<!--
+[
+    Dev User
+    karpenter
 ]
 --->
-
-

@@ -62,7 +62,7 @@
 #     - name: persistent-storage
 #       persistentVolumeClaim:
 #         claimName: myapp
-############################################
+######################################
 # apiVersion: apps/v1
 # kind: Deployment
 # metadata:
@@ -101,46 +101,84 @@
 #   # type: ClusterIP
 #   # type: NodePort
 #   type: LoadBalancer
----
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: postgres
+#   labels:
+#     app: postgres
+# spec:
+#   replicas: 100
+#   selector:
+#     matchLabels:
+#       app: postgres
+#   template:
+#     metadata:
+#       labels:
+#         app: postgres
+#     spec:
+#       containers:
+#         - name: postgres
+#           image: postgres:latest # Explicitly set the latest version
+#           imagePullPolicy: Always
+#           ports:
+#             - containerPort: 5432
+#           env: # Add environment variables to configure PostgreSQL if needed
+#             - name: POSTGRES_USER
+#               value: "admin"
+#             - name: POSTGRES_PASSWORD
+#               value: "password"
+#             - name: POSTGRES_DB
+#               value: "mydatabase"
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: postgres-service
+# spec:
+#   selector:
+#     app: postgres
+#   ports:
+#     - protocol: TCP
+#       port: 5432
+#       targetPort: 5432
+#   type: LoadBalancer
+#   # type: ClusterIP
+###################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: nginx
   labels:
-    app: postgres
+    app: nginx
 spec:
-  replicas: 1
+  replicas: 350
   selector:
     matchLabels:
-      app: postgres
+      app: nginx
   template:
     metadata:
       labels:
-        app: postgres
+        app: nginx
     spec:
       containers:
-        - name: postgres
-          image: postgres:latest # Explicitly set the latest version
+        - name: nginx
+          image: nginx:latest # Explicitly set the latest version
           imagePullPolicy: Always
           ports:
-            - containerPort: 5432
-          env: # Add environment variables to configure PostgreSQL if needed
-            - name: POSTGRES_USER
-              value: "admin"
-            - name: POSTGRES_PASSWORD
-              value: "password"
-            - name: POSTGRES_DB
-              value: "mydatabase"
+            - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-service
+  name: nginx-service
 spec:
   selector:
-    app: postgres
+    app: nginx
   ports:
     - protocol: TCP
-      port: 5432
-      targetPort: 5432
+      port: 80
+      targetPort: 80
   type: LoadBalancer
+  # type: ClusterIP
