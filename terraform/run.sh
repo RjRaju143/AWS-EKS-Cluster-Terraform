@@ -4,57 +4,47 @@
 set -e
 set -x
 
-# Define the environment variable
-ENVIRONMENT="dev"
-WORKING_DIR="environments/$ENVIRONMENT"
-
-# Check if the environment directory exists
-if [ ! -d "$WORKING_DIR" ]; then
-  echo "Error: Environment directory '$WORKING_DIR' does not exist."
-  exit 1
-fi
-
-# Navigate to the environment directory
-cd "$WORKING_DIR"
+EKS_CLUSTER='./environments/dev/1-eks/'
+METRICS_SERVER='./environments/dev/2-metrics-server/'
+EBS_CSI_DRIVER='./environments/dev/3-ebs-csi-driver/'
+MANAGER_USER='./environments/dev/4-manager-user/'
 
 # Display options to the user
 echo "Terraform Operations Menu:"
-echo "1. Initialize, Validate, Plan and Apply changes"
-echo "2. Destroy Terraform-managed infrastructure"
-
+echo "1. EKS cluster"
+echo "2. Metrics server"
+echo "3. EBS-CSI driver"
+echo "4. MANAGER User"
 # Prompt user to enter an option
-read -p "Enter your option (1 or 2): " OPTION
+read -p "Enter your option (1, 2, 3, 4): " OPTION
 
 # Execute actions based on the user’s selection
 case $OPTION in
   1)
-    echo "Starting Terraform initialization, validation, planning, and apply process..."
-
-    echo "Initializing Terraform..."
-    terraform init
-
-    echo "Validating Terraform configuration..."
-    terraform validate
-
-    echo "Planning Terraform changes..."
-    terraform plan -out=tfplan
-
-    echo "Applying Terraform changes..."
-    terraform apply "tfplan"
-
-    echo "Terraform apply completed successfully."
+    echo "EKS_CLUSTER"
+    cd "$EKS_CLUSTER"
+    ./run.sh
     ;;
 
   2)
-    echo "Destroying Terraform-managed infrastructure..."
+    echo "METRICS_SERVER"
 
-    echo "Initializing Terraform..."
-    terraform init
+    cd "$METRICS_SERVER"
+    ./run.sh
+    ;;
 
-    echo "Destroying resources..."
-    terraform destroy -auto-approve
+  3)
+    echo "METRICS_SERVER"
 
-    echo "Terraform destroy completed successfully."
+    cd "$EBS_CSI_DRIVER"
+    ./run.sh
+    ;;
+
+  4)
+    echo "MANAGER_USER"
+
+    cd "$MANAGER_USER"
+    ./run.sh
     ;;
 
   *)
@@ -62,4 +52,3 @@ case $OPTION in
     exit 1
     ;;
 esac
-

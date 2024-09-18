@@ -50,21 +50,3 @@ variable "node_group_name" {
   type        = string
   default     = "general"
 }
-
-variable "kubernetes_group_name" {
-  description = "EKS group name"
-  type        = list(string)
-  default     = ["my-admin"]
-}
-
-variable "awsRegion" {
-  description = "awsRegion cluster_autoscaler"
-  type        = string
-}
-
-
-variable "admin_user_name" {
-  description = "Eks Admin User name"
-  type        = string
-  default     = "manager"
-}
