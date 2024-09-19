@@ -1,4 +1,5 @@
-### helm-provider for eks cluster
+
+## helm-provider for eks cluster
 data "aws_eks_cluster" "eks" {
   name = var.cluster_name
 }
@@ -11,10 +12,9 @@ provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.eks.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.eks.token
+    token = data.aws_eks_cluster_auth.eks.token
   }
 }
-
 #################
 ###  metrics_server
 resource "helm_release" "metrics_server" {

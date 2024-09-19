@@ -4,47 +4,57 @@
 set -e
 set -x
 
-EKS_CLUSTER='./environments/dev/1-eks/'
-METRICS_SERVER='./environments/dev/2-metrics-server/'
-EBS_CSI_DRIVER='./environments/dev/3-ebs-csi-driver/'
-MANAGER_USER='./environments/dev/4-manager-user/'
+# Define the environment variable
+ENVIRONMENT="dev"
+WORKING_DIR="environments/$ENVIRONMENT"
+
+# Check if the environment directory exists
+if [ ! -d "$WORKING_DIR" ]; then
+  echo "Error: Environment directory '$WORKING_DIR' does not exist."
+  exit 1
+fi
+
+# Navigate to the environment directory
+cd "$WORKING_DIR"
 
 # Display options to the user
 echo "Terraform Operations Menu:"
-echo "1. EKS cluster"
-echo "2. Metrics server"
-echo "3. EBS-CSI driver"
-echo "4. MANAGER User"
+echo "1. Initialize, Validate, Plan and Apply changes"
+echo "2. Destroy Terraform-managed infrastructure"
+
 # Prompt user to enter an option
-read -p "Enter your option (1, 2, 3, 4): " OPTION
+read -p "Enter your option (1 or 2): " OPTION
 
 # Execute actions based on the user’s selection
 case $OPTION in
   1)
-    echo "EKS_CLUSTER"
-    cd "$EKS_CLUSTER"
-    ./run.sh
+    echo "Starting Terraform initialization, validation, planning, and apply process..."
+
+    echo "Initializing Terraform..."
+    terraform init
+
+    echo "Validating Terraform configuration..."
+    terraform validate
+
+    echo "Planning Terraform changes..."
+    terraform plan -out=tfplan
+
+    echo "Applying Terraform changes..."
+    terraform apply "tfplan"
+
+    echo "Terraform apply completed successfully."
     ;;
 
   2)
-    echo "METRICS_SERVER"
+    echo "Destroying Terraform-managed infrastructure..."
 
-    cd "$METRICS_SERVER"
-    ./run.sh
-    ;;
+    echo "Initializing Terraform..."
+    terraform init
 
-  3)
-    echo "METRICS_SERVER"
+    echo "Destroying resources..."
+    terraform destroy -auto-approve
 
-    cd "$EBS_CSI_DRIVER"
-    ./run.sh
-    ;;
-
-  4)
-    echo "MANAGER_USER"
-
-    cd "$MANAGER_USER"
-    ./run.sh
+    echo "Terraform destroy completed successfully."
     ;;
 
   *)

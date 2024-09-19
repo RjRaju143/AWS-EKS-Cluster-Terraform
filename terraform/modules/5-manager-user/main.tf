@@ -1,23 +1,3 @@
-
-###### TODO
-### helm-provider for eks cluster
-data "aws_eks_cluster" "eks" {
-  name = var.cluster_name
-}
-
-data "aws_eks_cluster_auth" "eks" {
-  name = var.cluster_name
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.eks.token
-  }
-}
-
-##################################
 ## ADD Manager Role
 data "aws_caller_identity" "current" {}
 
@@ -105,11 +85,18 @@ resource "aws_iam_user_policy_attachment" "manager" {
 
 # Best practice: use IAM roles due to temporary credentials
 resource "aws_eks_access_entry" "manager" {
-  # cluster_name      = aws_eks_cluster.eks.name
   cluster_name  = var.cluster_name
   principal_arn = aws_iam_role.eks_admin.arn
-  # kubernetes_groups = ["my-admin"]
   kubernetes_groups = var.kubernetes_group_name
+}
+
+## helm-provider for eks cluster
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name
+}
+
+data "aws_eks_cluster_auth" "eks" {
+  name = var.cluster_name
 }
 
 provider "kubernetes" {
@@ -118,11 +105,11 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
 }
 
-# resource "kubernetes_manifest" "manager_user_yaml" {
-#   manifest = yamldecode(file("${path.module}/manager-user/admin-cluster-role-binding.yaml"))
-# }
+resource "kubernetes_manifest" "manager_user_yaml" {
+  manifest = yamldecode(file("${path.module}/admin-role/admin-cluster-role-binding.yaml"))
+}
 
-# output "kubernetes_manifest" {
-#   value = kubernetes_manifest.manager_user_yaml
-# }
+output "kubernetes_manifest" {
+  value = kubernetes_manifest.manager_user_yaml.manifest
+}
 
