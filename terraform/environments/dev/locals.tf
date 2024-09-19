@@ -12,5 +12,7 @@ locals {
   node_group_name       = "general"
   kubernetes_group_name = ["my-admin"]
   admin_user_name       = "manager"
+  addon_name            = "eks-pod-identity-agent"
+  addon_version         = "v1.3.0-eksbuild.1"
 }
 

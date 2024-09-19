@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# Exit immediately if a command exits with a non-zero status and enable debug mode
-set -e
-set -x
-
 # Define the environment variable
 ENVIRONMENT="dev"
 WORKING_DIR="environments/$ENVIRONMENT"

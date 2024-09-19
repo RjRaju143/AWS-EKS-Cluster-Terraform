@@ -1,41 +1,3 @@
-
-## helm-provider for eks cluster
-data "aws_eks_cluster" "eks" {
-  name = var.cluster_name
-}
-
-data "aws_eks_cluster_auth" "eks" {
-  name = var.cluster_name
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token = data.aws_eks_cluster_auth.eks.token
-  }
-}
-#################
-###  metrics_server
-resource "helm_release" "metrics_server" {
-  name = "metrics-server"
-
-  repository = "https://kubernetes-sigs.github.io/metrics-server/"
-  chart      = "metrics-server"
-  namespace  = "kube-system"
-  version    = "3.12.1"
-
-  values = [file("${path.module}/values/metrics-server.yaml")]
-
-  #   depends_on = [aws_eks_node_group.general]
-}
-
-### pod_identity addon
-resource "aws_eks_addon" "pod_identity" {
-  cluster_name  = var.cluster_name
-  addon_name    = "eks-pod-identity-agent"
-  addon_version = "v1.3.0-eksbuild.1"
-}
 ######################
 ### Cluster Auto Scaler
 resource "aws_iam_role" "cluster_autoscaler" {
@@ -128,5 +90,6 @@ resource "helm_release" "cluster_autoscaler" {
     value = var.awsRegion
   }
 
-  depends_on = [helm_release.metrics_server]
+#   depends_on = [helm_release.metrics_server]
 }
+

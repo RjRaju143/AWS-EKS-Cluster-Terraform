@@ -18,8 +18,6 @@ output "eks_oidc_identity" {
   value = aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
-
-
-# identity[0].oidc[0].issuer
-  # cluster_oidc_issuer_url    = aws_eks_cluster.eks.identity[0].oidc[0].issuer
-# 
+output "eks_node_group" {
+  value = aws_eks_node_group.general
+}
