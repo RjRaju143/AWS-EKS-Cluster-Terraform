@@ -42,12 +42,3 @@ module "eks" {
   # public_zone2    = local.public_subnet2_id
 }
 
-# output "private_subnet1_id" {
-#   value       = tolist(module.eks.eks_cluster.vpc_config[0].subnet_ids)[0]
-# }
-
-# output "private_subnet2_id" {
-#   value       = tolist(module.eks.eks_cluster.vpc_config[0].subnet_ids)[1]
-# }
-
-
