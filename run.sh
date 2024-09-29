@@ -67,7 +67,8 @@ case $OPTION in
         cd "$WORK_DIR"/"$EKS_CLUSTER"
         echo 2 | /bin/sh ./run.sh
         # Public_VPC
-        cd "$WORK_DIR"/"$PUBLIC_VPC"
+        # cd "$WORK_DIR"/"$PUBLIC_VPC"
+        cd "$WORK_DIR"/"$PRIVATE_VPC"
         echo 2 | /bin/sh ./run.sh
     ;;
     
