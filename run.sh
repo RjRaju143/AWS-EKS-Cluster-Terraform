@@ -7,11 +7,17 @@ set -e
 ENV="staging"
 
 PUBLIC_VPC="environments/$ENV/vpc/public/"
+PRIVATE_VPC="environments/$ENV/vpc/private/"
 EKS_CLUSTER="environments/$ENV/EKS-cluster/"
 ADDONS="environments/$ENV/Addons/"
 
 if [ ! -d "$PUBLIC_VPC" ]; then
     echo "Error: Environment directory '$PUBLIC_VPC' does not exist."
+    exit 1
+fi
+
+if [ ! -d "$PRIVATE_VPC" ]; then
+    echo "Error: Environment directory '$PRIVATE_VPC' does not exist."
     exit 1
 fi
 
@@ -41,7 +47,8 @@ case $OPTION in
     1)
         echo "Executing Initialize, Validate, Plan, and Apply steps..."
         # Public_VPC
-        cd "$WORK_DIR"/"$PUBLIC_VPC"
+        # cd "$WORK_DIR"/"$PUBLIC_VPC"
+        cd "$WORK_DIR"/"$PRIVATE_VPC"
         echo 1 | /bin/sh ./run.sh
         # Cluster
         cd "$WORK_DIR"/"$EKS_CLUSTER"
