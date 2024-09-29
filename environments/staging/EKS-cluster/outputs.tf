@@ -28,15 +28,23 @@ output "public_subnet2_id" {
   value       = data.terraform_remote_state.vpc.outputs.public_subnet2_id
 }
 
-output "public_zone1" {
-  description = "The availability zone of the first public subnet"
-  value       = data.terraform_remote_state.vpc.outputs.public_zone1
+output "private_subnet1_id" {
+  value       = tolist(module.eks.eks_cluster.vpc_config[0].subnet_ids)[0]
 }
 
-output "public_zone2" {
-  description = "The availability zone of the second public subnet"
-  value       = data.terraform_remote_state.vpc.outputs.public_zone2
+output "private_subnet2_id" {
+  value       = tolist(module.eks.eks_cluster.vpc_config[0].subnet_ids)[1]
 }
+
+# output "public_zone1" {
+#   description = "The availability zone of the first public subnet"
+#   value       = data.terraform_remote_state.vpc.outputs.public_zone1
+# }
+
+# output "public_zone2" {
+#   description = "The availability zone of the second public subnet"
+#   value       = data.terraform_remote_state.vpc.outputs.public_zone2
+# }
 
 # output "eks_cluster" {
 #   description = "The name of the EKS cluster"

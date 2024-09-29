@@ -5,6 +5,6 @@ locals {
   instance_types      = ["t2.medium"]
   node_group_name     = "staging-cluster-general"
 
-  public_subnet1_id = data.terraform_remote_state.vpc.outputs.public_subnet1_id
-  public_subnet2_id = data.terraform_remote_state.vpc.outputs.public_subnet2_id
+  private_subnet1_id = data.terraform_remote_state.vpc.outputs.private_subnet1_id
+  private_subnet2_id = data.terraform_remote_state.vpc.outputs.private_subnet2_id
 }

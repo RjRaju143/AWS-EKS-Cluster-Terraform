@@ -22,4 +22,3 @@ variable "cluster_security_group_id" {
   description = "Security group ID of the EKS cluster"
   type        = list(string)
 }
-
