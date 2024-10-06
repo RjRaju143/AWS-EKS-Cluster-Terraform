@@ -76,7 +76,7 @@
 
   ```sh
   # aws eks update-kubeconfig --region <region> --name <cluster-name>
-  aws eks update-kubeconfig --region ap-south-1 --name dev-cluster
+  aws eks update-kubeconfig --region ap-south-2 --name dev-cluster
   ```
 
 - **Check Permissions: `(optional)`**
@@ -125,7 +125,7 @@
 4. **Create `kubeconfig.yaml` File to Access Cluster with Admin Profile:**
 
    ```sh
-   aws eks update-kubeconfig --region ap-south-1 --name dev-cluster --profile eks-admin
+   aws eks update-kubeconfig --region ap-south-2 --name dev-cluster --profile eks-admin
    ```
 
 ---

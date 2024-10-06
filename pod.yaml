@@ -210,10 +210,10 @@ spec:
   ingressClassName: external-nginx
   tls:
     - hosts:
-        - k8s-ingress-external-61c910d500-cdca44da5fa35e7e.elb.ap-south-1.amazonaws.com
+        - k8s-ingress-external-61c910d500-cdca44da5fa35e7e.elb.ap-south-2.amazonaws.com
       secretName: letsencrypt-secret
   rules:
-    - host: k8s-ingress-external-61c910d500-cdca44da5fa35e7e.elb.ap-south-1.amazonaws.com
+    - host: k8s-ingress-external-61c910d500-cdca44da5fa35e7e.elb.ap-south-2.amazonaws.com
       http:
         paths:
           - path: /

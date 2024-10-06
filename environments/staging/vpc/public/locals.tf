@@ -1,7 +1,7 @@
 locals {
-  region              = "ap-south-1"
-  az1                 = "ap-south-1a"
-  az2                 = "ap-south-1b"
+  region              = "ap-south-2"
+  az1                 = "ap-south-2a"
+  az2                 = "ap-south-2b"
   vpc_name            = "staging-main"
   vpc_cidr            = "10.0.0.0/16"
   public_subnet1_cidr = "10.0.64.0/19"

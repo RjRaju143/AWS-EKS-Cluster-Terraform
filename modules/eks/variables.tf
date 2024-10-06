@@ -48,3 +48,8 @@ variable "node_group_name" {
   type        = string
   default     = "general"
 }
+
+variable "environment" {
+  description = "environment name"
+  type        = string
+}

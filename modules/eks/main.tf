@@ -100,6 +100,8 @@ resource "aws_eks_node_group" "general" {
     max_unavailable = 1
   }
 
+  disk_size = 20 # min 20GB recommended
+
   labels = {
     # role = "general"
     role = var.node_group_name
@@ -115,3 +117,4 @@ resource "aws_eks_node_group" "general" {
     ignore_changes = [scaling_config[0].desired_size]
   }
 }
+
