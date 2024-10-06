@@ -1,11 +1,3 @@
-### Stte of EKS cluster
-data "terraform_remote_state" "cluster" {
-  backend = "local"
-  config = {
-    path = "../EKS-cluster/terraform.tfstate"
-  }
-}
-
 ###
 data "aws_eks_cluster" "eks" {
   name = local.cluster_name
