@@ -54,15 +54,15 @@ case $OPTION in
         cd "$WORK_DIR"/"$EKS_CLUSTER"
         echo 1 | /bin/sh ./run.sh
         # Addons
-        cd "$WORK_DIR"/"$ADDONS"
-        echo 1 | /bin/sh ./run.sh
+        # cd "$WORK_DIR"/"$ADDONS"
+        # echo 1 | /bin/sh ./run.sh
     ;;
     
     2)
         echo "Executing Destroy for Terraform-managed infrastructure..."
         # Addons
-        cd "$WORK_DIR"/"$ADDONS"
-        echo 2 | /bin/sh ./run.sh
+        # cd "$WORK_DIR"/"$ADDONS"
+        # echo 2 | /bin/sh ./run.sh
         # Cluster
         cd "$WORK_DIR"/"$EKS_CLUSTER"
         echo 2 | /bin/sh ./run.sh

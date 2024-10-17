@@ -13,16 +13,6 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-# variable "public_zone1" {
-#   description = "public zone 1"
-#   type        = string
-# }
-
-# variable "public_zone2" {
-#   description = "public zone 2"
-#   type        = string
-# }
-
 variable "instance_types" {
   description = "The instance types for the node group"
   type        = list(string)

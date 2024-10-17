@@ -19,7 +19,6 @@ POLICY
   lifecycle {
     ignore_changes = []
   }
-
 }
 
 resource "aws_iam_role_policy_attachment" "eks" {
@@ -35,7 +34,6 @@ resource "aws_eks_cluster" "eks" {
   vpc_config {
     endpoint_private_access = false
     endpoint_public_access  = true
-
     subnet_ids = var.subnet_ids
   }
 
@@ -80,41 +78,3 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.nodes.name
 }
-
-resource "aws_eks_node_group" "general" {
-  cluster_name    = aws_eks_cluster.eks.name
-  version         = var.eksversion
-  node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.nodes.arn
-  subnet_ids      = var.subnet_ids
-  capacity_type   = "ON_DEMAND"
-  instance_types  = var.instance_types
-
-  scaling_config {
-    desired_size = var.desired_size
-    max_size     = var.max_size
-    min_size     = var.min_size
-  }
-
-  update_config {
-    max_unavailable = 1
-  }
-
-  disk_size = 20 # min 20GB recommended
-
-  labels = {
-    # role = "general"
-    role = var.node_group_name
-  }
-
-  depends_on = [
-    aws_iam_role_policy_attachment.amazon_eks_worker_node_policy,
-    aws_iam_role_policy_attachment.amazon_eks_cni_policy,
-    aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
-  ]
-
-  lifecycle {
-    ignore_changes = [scaling_config[0].desired_size]
-  }
-}
-
