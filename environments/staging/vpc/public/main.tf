@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "../../../../modules/vpc/public"
+  source              = "../../../../modules/vpc/public"
 
   name                = local.vpc_name
   cidr_block          = local.vpc_cidr

@@ -1,55 +1,12 @@
 output "aws_region" {
   description = "The AWS region where resources are created"
-  value       = local.region
+  value       = "local.region-${local.region}"
 }
 
-output "vpc_id" {
-  description = "The ID of the main VPC created by the VPC module"
-  value       = data.terraform_remote_state.vpc.outputs.vpc_id
-}
-
-output "vpc_name" {
-  description = "The name tag of the VPC created by the VPC module"
-  value       = data.terraform_remote_state.vpc.outputs.vpc_name
-}
-
-output "aws_internet_gateway" {
-  description = "The ID of the Internet Gateway created by the VPC module"
-  value       = data.terraform_remote_state.vpc.outputs.aws_internet_gateway
-}
-
-output "public_subnet1_id" {
-  description = "The ID of the first public subnet created in availability zone 1"
-  value       = data.terraform_remote_state.vpc.outputs.public_subnet1_id
-}
-
-output "public_subnet2_id" {
+output "VPC" {
   description = "The ID of the second public subnet created in availability zone 2"
-  value       = data.terraform_remote_state.vpc.outputs.public_subnet2_id
+  value       = data.terraform_remote_state.vpc.outputs
 }
-
-output "private_subnet1_id" {
-  value       = tolist(module.eks.eks_cluster.vpc_config[0].subnet_ids)[0]
-}
-
-output "private_subnet2_id" {
-  value       = tolist(module.eks.eks_cluster.vpc_config[0].subnet_ids)[1]
-}
-
-# output "public_zone1" {
-#   description = "The availability zone of the first public subnet"
-#   value       = data.terraform_remote_state.vpc.outputs.public_zone1
-# }
-
-# output "public_zone2" {
-#   description = "The availability zone of the second public subnet"
-#   value       = data.terraform_remote_state.vpc.outputs.public_zone2
-# }
-
-# output "eks_cluster" {
-#   description = "The name of the EKS cluster"
-#   value       = module.eks.eks_cluster
-# }
 
 output "eks_cluster_id" {
   description = "The name of the EKS cluster"
