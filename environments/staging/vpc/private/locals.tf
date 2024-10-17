@@ -13,4 +13,4 @@ locals {
   cluster_name         = "staging-cluster"
   igw_cidr             = "0.0.0.0/0"
   nat_cidr             = "0.0.0.0/0"
-} 
+}
