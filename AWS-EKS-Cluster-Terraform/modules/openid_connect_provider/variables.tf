@@ -1,0 +1,3 @@
+variable "url" {
+  type        = string
+}
