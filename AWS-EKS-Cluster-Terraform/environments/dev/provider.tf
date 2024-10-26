@@ -1,12 +1,3 @@
-###
-data "aws_eks_cluster" "eks" {
-  name = local.cluster_name
-}
-
-data "aws_eks_cluster_auth" "eks" {
-  name = local.cluster_name
-}
-
 provider "aws" {
   region = local.region
 }
@@ -34,6 +25,20 @@ terraform {
   required_version = ">= 1.0.0"
 }
 
+provider "tls" {
+  # TLS provider typically does not need additional configuration
+}
+
+data "aws_eks_cluster" "eks" {
+  name       = local.cluster_name
+  depends_on = [module.eks_cluster]
+}
+
+data "aws_eks_cluster_auth" "eks" {
+  name       = local.cluster_name
+  depends_on = [module.eks_cluster]
+}
+
 provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.eks.endpoint
@@ -48,6 +53,3 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.eks.token
 }
 
-provider "tls" {
-  # TLS provider typically does not need additional configuration
-}

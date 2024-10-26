@@ -3,7 +3,7 @@
 set -e
 
 # Display options to the user
-echo "Install Public VPC CLuster"
+echo "Install Private VPC CLuster"
 echo "Terraform Operations Menu:"
 echo "1. Initialize, Validate, Plan and Apply changes"
 echo "2. Destroy Terraform-managed infrastructure"
@@ -27,7 +27,8 @@ case $OPTION in
         
         echo "Applying Terraform changes..."
         terraform apply "tfplan"
-        
+        # TF_LOG=DEBUG terraform apply "tfplan"
+
         echo "Terraform apply completed successfully."
     ;;
     
