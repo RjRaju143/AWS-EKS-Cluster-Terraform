@@ -13,7 +13,7 @@ locals {
   cluster_version       = "1.31" # or your preferred EKS version
   instance_types        = ["t3.medium"]
   node_group_name       = "dev-cluster-general"
-  capacity_type         = "SPOT"
+  capacity_type         = "ON_DEMAND" #ON_DEMAND # SPOT
   addon_name            = "eks-pod-identity-agent"
   addon_version         = "v1.3.0-eksbuild.1"
   dev_user_name         = "developer"
@@ -21,6 +21,3 @@ locals {
   admin_user_name       = "manager"
   kubernetes_group_name = ["my-admin"]
 }
-
-
-

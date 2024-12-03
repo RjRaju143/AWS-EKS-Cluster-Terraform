@@ -154,7 +154,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: 300
+  replicas: 500
   selector:
     matchLabels:
       app: nginx

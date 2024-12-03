@@ -21,7 +21,7 @@ module "eks_cluster" {
   name            = local.cluster_name
   eksversion      = local.cluster_version
   desired_size    = 1
-  max_size        = 10
+  max_size        = 2
   min_size        = 1
   disk_size       = 20
   capacity_type   = local.capacity_type
@@ -57,11 +57,11 @@ module "openid_connect_provider" {
   depends_on = [module.eks_cluster]
 }
 
-module "ebs-csi-driver" {
-  source       = "../../modules/ebs-csi-driver"
-  cluster_name = local.cluster_name
-  depends_on   = [module.eks_cluster]
-}
+# module "ebs-csi-driver" {
+#   source       = "../../modules/ebs-csi-driver"
+#   cluster_name = local.cluster_name
+#   depends_on   = [module.eks_cluster]
+# }
 
 ##### TODO: ######
 # module "efs-csi-driver" {
@@ -94,11 +94,11 @@ module "ebs-csi-driver" {
 ##### TODO: ######
 
 ### ingress-nginx nlb
-module "ingress-nginx-nlb" {
-  source       = "../../modules/ingress"
-  cluster_name = local.cluster_name
-  vpc_id       = module.vpc.vpc_main.id
-  depends_on   = [module.cluster_auto_scale]
-}
+# module "ingress-nginx-nlb" {
+#   source       = "../../modules/ingress"
+#   cluster_name = local.cluster_name
+#   vpc_id       = module.vpc.vpc_main.id
+#   depends_on   = [module.cluster_auto_scale]
+# }
 
 
