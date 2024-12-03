@@ -20,13 +20,13 @@ module "cluster_auto_scale" {
 
 module "openid_connect_provider" {
   source     = "../../../modules/openid_connect_provider"
-  url        = data.terraform_remote_state.cluster.outputs.eks_oidc_identity
+  url        = "https://oidc.eks.ap-south-2.amazonaws.com/id/0B576E5F60EACAF6549E79FBFD44C96E"
 }
 
 module "dev_user" {
   source              = "../../../modules/user/dev-user"
   cluster_name        = local.cluster_name
-  k8s_dev_groups_name = local.k8s_dev_groups_name
+  dev_groups_name = local.dev_groups_name
   dev_user_name       = local.dev_user_name
 }
 
@@ -35,6 +35,7 @@ module "manager_user" {
   admin_user_name       = local.admin_user_name
   cluster_name          = local.cluster_name
   kubernetes_group_name = local.kubernetes_group_name
+  iam_role_name         = local.manager_iam_role_name
 }
 
 module "ebs-csi-driver" {
@@ -59,3 +60,11 @@ module "ingress-nginx-nlb" {
   vpc_id       = data.terraform_remote_state.cluster.outputs.VPC.vpc_id
   depends_on   = [module.cluster_auto_scale]
 }
+
+## TODO:
+module "aws_auth" {
+  source = "../../../modules/aws_auth"
+  cluster_name = "staging-cluster"
+  region = "ap-south-2"
+}
+

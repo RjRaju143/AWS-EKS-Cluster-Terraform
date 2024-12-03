@@ -2,7 +2,7 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "eks_admin" {
-  name               = "dev-cluster-eks-admin"
+  name               = var.iam_role_name
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",

@@ -1,5 +1,5 @@
 provider "aws" {
-	region = "ap-south-2"
+	region = var.region
 }
 
 provider "kubernetes" {
@@ -9,7 +9,7 @@ provider "kubernetes" {
 }
 
 data "aws_eks_cluster" "cluster" {
-	name = "dev-cluster"
+	name = var.cluster_name
 }
 
 data "aws_eks_cluster_auth" "cluster" {
@@ -23,7 +23,7 @@ resource "kubernetes_config_map" "aws_auth" {
   }
   data = {
     mapRoles = <<EOT
-- rolearn: arn:aws:iam::654654428184:role/dev-cluster-eks-nodes
+- rolearn: arn:aws:iam::767828748484:role/staging-cluster-eks-nodes
   username: system:node:{{EC2PrivateDNSName}}
   groups:
     - system:nodes

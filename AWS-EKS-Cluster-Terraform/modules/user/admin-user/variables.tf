@@ -7,7 +7,7 @@ variable "admin_user_name" {
 variable "kubernetes_group_name" {
   description = "EKS group name"
   type        = list(string)
-  default     = ["my-admin"]
+  default     = ["admin"]
 }
 
 variable "cluster_name" {
@@ -16,3 +16,8 @@ variable "cluster_name" {
 }
 
 
+variable "iam_role_name" {
+  description = "The name of eks iam role"
+  type = string
+  default = "eks-admin"
+}

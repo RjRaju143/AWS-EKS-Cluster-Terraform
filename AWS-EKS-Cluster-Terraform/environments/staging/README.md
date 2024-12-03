@@ -117,9 +117,9 @@
 3. Edit Manualy .aws/config file.
 
    ```sh
-   [profile eks-admin]
-   role_arn = arn:aws:iam::654654428184:role/dev-cluster-eks-admin
-   source_profile = manager
+    [profile eks-admin]
+    role_arn = arn:aws:iam::654654428184:role/dev-cluster-eks-admin
+    source_profile = manager
    ```
 
 4. **Create `kubeconfig.yaml` File to Access Cluster with Admin Profile:**

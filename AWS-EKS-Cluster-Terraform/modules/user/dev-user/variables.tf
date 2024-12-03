@@ -1,4 +1,4 @@
-variable "k8s_dev_groups_name" {
+variable "dev_groups_name" {
   description = "The name of the EKS group name"
   type        = list(string)
 }
