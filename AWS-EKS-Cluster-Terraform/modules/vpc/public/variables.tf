@@ -18,12 +18,12 @@ variable "public_subnet2_cidr" {
   type        = string
 }
 
-variable "zone1" {
+variable "public_zone1" {
   description = "The availability zone for public subnet 1"
   type        = string
 }
 
-variable "zone2" {
+variable "public_zone2" {
   description = "The availability zone for public subnet 2"
   type        = string
 }

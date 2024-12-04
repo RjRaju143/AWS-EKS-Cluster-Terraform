@@ -19,11 +19,11 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_subnet" "public_zone1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet1_cidr
-  availability_zone       = var.zone1
+  availability_zone       = var.public_zone1
   map_public_ip_on_launch = true
 
   tags = {
-    Name                                        = "${var.name}-public-${var.zone1}"
+    Name                                        = "${var.name}-public-${var.public_zone1}"
     "kubernetes.io/role/elb"                    = "1"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
@@ -32,11 +32,11 @@ resource "aws_subnet" "public_zone1" {
 resource "aws_subnet" "public_zone2" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet2_cidr
-  availability_zone       = var.zone2
+  availability_zone       = var.public_zone2
   map_public_ip_on_launch = true
 
   tags = {
-    Name                                        = "${var.name}-public-${var.zone2}"
+    Name                                        = "${var.name}-public-${var.public_zone2}"
     "kubernetes.io/role/elb"                    = "1"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
