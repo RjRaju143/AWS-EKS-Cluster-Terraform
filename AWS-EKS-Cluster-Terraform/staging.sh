@@ -45,8 +45,8 @@ case $OPTION in
     1)
         echo "Executing Initialize, Validate, Plan, and Apply steps..."
         # Public_VPC
-        # cd "$WORK_DIR"/"$PUBLIC_VPC"
-        cd "$WORK_DIR"/"$PRIVATE_VPC"
+        cd "$WORK_DIR"/"$PUBLIC_VPC"
+        # cd "$WORK_DIR"/"$PRIVATE_VPC"
         echo 1 | /bin/sh ./run.sh
         # Cluster
         cd "$WORK_DIR"/"$EKS_CLUSTER"
@@ -65,8 +65,8 @@ case $OPTION in
         cd "$WORK_DIR"/"$EKS_CLUSTER"
         echo 2 | /bin/sh ./run.sh
         # Public_VPC
-        # cd "$WORK_DIR"/"$PUBLIC_VPC"
-        cd "$WORK_DIR"/"$PRIVATE_VPC"
+        cd "$WORK_DIR"/"$PUBLIC_VPC"
+        # cd "$WORK_DIR"/"$PRIVATE_VPC"
         echo 2 | /bin/sh ./run.sh
     ;;
     

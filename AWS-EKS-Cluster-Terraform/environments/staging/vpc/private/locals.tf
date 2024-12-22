@@ -1,5 +1,5 @@
 locals {
-  region               = "ap-south-2"
+  region               = "ap-south-1"
   vpc_name             = "staging-main"
   vpc_cidr             = "10.0.0.0/16"
   private_subnet1_cidr = "10.0.0.0/19"

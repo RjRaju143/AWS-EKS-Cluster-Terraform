@@ -20,7 +20,7 @@ module "cluster_auto_scale" {
 
 module "openid_connect_provider" {
   source     = "../../../modules/openid_connect_provider"
-  url        = "https://oidc.eks.ap-south-2.amazonaws.com/id/0B576E5F60EACAF6549E79FBFD44C96E"
+  url        = local.openid_connect_provider
 }
 
 module "dev_user" {
@@ -47,8 +47,10 @@ module "efs-csi-driver" {
   source                    = "../../../modules/efs-csi-driver"
   cluster_name              = local.cluster_name
   cluster_security_group_id = [data.terraform_remote_state.cluster.outputs.cluster_security_group_id]
-  subnet_id_1               = data.terraform_remote_state.cluster.outputs.VPC.private_subnet1_id
-  subnet_id_2               = data.terraform_remote_state.cluster.outputs.VPC.private_subnet2_id
+  # subnet_id_1               = data.terraform_remote_state.cluster.outputs.VPC.private_subnet1_id
+  # subnet_id_2               = data.terraform_remote_state.cluster.outputs.VPC.private_subnet2_id
+  subnet_id_1               = data.terraform_remote_state.cluster.outputs.VPC.public_subnet1_id
+  subnet_id_2               = data.terraform_remote_state.cluster.outputs.VPC.public_subnet2_id
   cluster_oidc_issuer       = module.openid_connect_provider.aws_iam_openid_connect_provider.url 
   cluster_oidc_issuer_arn   = module.openid_connect_provider.aws_iam_openid_connect_provider.url
 }
@@ -61,10 +63,10 @@ module "ingress-nginx-nlb" {
   depends_on   = [module.cluster_auto_scale]
 }
 
-## TODO:
-module "aws_auth" {
-  source = "../../../modules/aws_auth"
-  cluster_name = "staging-cluster"
-  region = "ap-south-2"
-}
+# ## TODO:
+# module "aws_auth" {
+#   source = "../../../modules/aws_auth"
+#   cluster_name = "staging-cluster"
+#   region = "ap-south-2"
+# }
 

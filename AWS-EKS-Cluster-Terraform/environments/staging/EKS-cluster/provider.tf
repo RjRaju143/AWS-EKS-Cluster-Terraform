@@ -11,4 +11,10 @@ terraform {
       version = "~> 5.49"
     }
   }
+
+  backend "s3" {
+    bucket                  = "stateofterraform"
+    key                     = "EKS/terraform.tfstate"
+    region                  = "ap-south-1"
+  }
 }

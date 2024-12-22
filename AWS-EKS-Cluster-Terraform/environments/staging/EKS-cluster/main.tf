@@ -10,6 +10,6 @@ module "eks_cluster" {
   node_group_name = local.node_group_name
 
   # Use subnet IDs based on whether it's a private or public VPC
-  # subnet_ids      = [local.public_subnet1_id, local.public_subnet2_id]
-  subnet_ids      = [local.private_subnet1_id, local.private_subnet2_id]
+  subnet_ids      = [local.public_subnet1_id, local.public_subnet2_id]
+  # subnet_ids      = [local.private_subnet1_id, local.private_subnet2_id]
 }
