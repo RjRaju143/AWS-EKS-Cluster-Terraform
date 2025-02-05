@@ -3,11 +3,6 @@ output "aws_region" {
   value       = "${local.region}"
 }
 
-output "VPC" {
-  description = "The ID of the second public subnet created in availability zone 2"
-  value       = data.terraform_remote_state.vpc.outputs
-}
-
 output "eks_cluster_id" {
   description = "The name of the EKS cluster"
   value       = module.eks_cluster.eks_cluster.id

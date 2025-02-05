@@ -6,10 +6,6 @@ locals {
   instance_types     = ["t3.medium"]
   node_group_name    = "staging-cluster-general"
 
-  # Set subnet IDs based on the VPC type
-  public_subnet1_id  = data.terraform_remote_state.vpc.outputs.public_subnet1_id
-  public_subnet2_id  = data.terraform_remote_state.vpc.outputs.public_subnet2_id
-
-  # private_subnet1_id = data.terraform_remote_state.vpc.outputs.private_subnet1_id
-  # private_subnet2_id = data.terraform_remote_state.vpc.outputs.private_subnet2_id
+  subnet1_id = "subnet-0b947ede9113006cd"
+  subnet2_id = "subnet-01dc0dbd696df085f"
 }
