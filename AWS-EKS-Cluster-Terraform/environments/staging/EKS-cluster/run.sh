@@ -16,6 +16,15 @@ case $OPTION in
     1)
         echo "Starting Terraform initialization, validation, planning, and apply process..."
         
+        # Check if the 'staging' workspace exists
+        if terraform workspace list | grep -q "staging"; then
+            echo "Workspace 'staging' already exists. Selecting it..."
+            terraform workspace select staging
+        else
+            echo "Creating new workspace 'staging'..."
+            terraform workspace new staging
+        fi
+
         echo "Initializing Terraform..."
         terraform init
         

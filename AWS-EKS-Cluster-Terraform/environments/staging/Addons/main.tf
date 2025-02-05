@@ -23,20 +23,20 @@ module "openid_connect_provider" {
   url        = local.openid_connect_provider
 }
 
-# module "dev_user" {
-#   source              = "../../../modules/user/dev-user"
-#   cluster_name        = local.cluster_name
-#   dev_groups_name = local.dev_groups_name
-#   dev_user_name       = local.dev_user_name
-# }
+module "dev_user" {
+  source              = "../../../modules/user/dev-user"
+  cluster_name        = local.cluster_name
+  dev_groups_name = local.dev_groups_name
+  dev_user_name       = local.dev_user_name
+}
 
-# module "manager_user" {
-#   source                = "../../../modules/user/admin-user"
-#   admin_user_name       = local.admin_user_name
-#   cluster_name          = local.cluster_name
-#   kubernetes_group_name = local.kubernetes_group_name
-#   iam_role_name         = local.manager_iam_role_name
-# }
+module "manager_user" {
+  source                = "../../../modules/user/admin-user"
+  admin_user_name       = local.admin_user_name
+  cluster_name          = local.cluster_name
+  kubernetes_group_name = local.kubernetes_group_name
+  iam_role_name         = local.manager_iam_role_name
+}
 
 module "ebs-csi-driver" {
   source       = "../../../modules/ebs-csi-driver"
@@ -44,29 +44,27 @@ module "ebs-csi-driver" {
 }
 
 module "efs-csi-driver" {
-  source                    = "../../../modules/efs-csi-driver"
-  cluster_name              = local.cluster_name
-  cluster_security_group_id = [data.terraform_remote_state.cluster.outputs.cluster_security_group_id]
-  # subnet_id_1               = data.terraform_remote_state.cluster.outputs.VPC.private_subnet1_id
-  # subnet_id_2               = data.terraform_remote_state.cluster.outputs.VPC.private_subnet2_id
-  subnet_id_1               = data.terraform_remote_state.cluster.outputs.VPC.public_subnet1_id
-  subnet_id_2               = data.terraform_remote_state.cluster.outputs.VPC.public_subnet2_id
-  cluster_oidc_issuer       = module.openid_connect_provider.aws_iam_openid_connect_provider.url 
-  cluster_oidc_issuer_arn   = module.openid_connect_provider.aws_iam_openid_connect_provider.url
+  source                      = "../../../modules/efs-csi-driver"
+  cluster_name                = local.cluster_name
+  cluster_security_group_id   = ["sg-0a65b0e972e1b2d5c"] # Change this to your EKS security group id
+  subnet_id_1                 = "subnet-0723c0569934e3666" # Change this to your subnet id
+  subnet_id_2                 = "subnet-0bb48b083fd985d90" # Change this to your subnet id
+  cluster_oidc_issuer         = module.openid_connect_provider.aws_iam_openid_connect_provider.url 
+  cluster_oidc_issuer_arn     = module.openid_connect_provider.aws_iam_openid_connect_provider.url
 }
 
-### ingress-nginx nlb
-# module "ingress-nginx-nlb" {
-#   source       = "../../../modules/ingress"
-#   cluster_name = local.cluster_name
-#   vpc_id       = data.terraform_remote_state.cluster.outputs.VPC.vpc_id
-#   depends_on   = [module.cluster_auto_scale]
-# }
+## ingress-nginx nlb
+module "ingress-nginx-nlb" {
+  source       = "../../../modules/ingress"
+  cluster_name = local.cluster_name
+  vpc_id       = data.terraform_remote_state.cluster.outputs.VPC.vpc_id
+  depends_on   = [module.cluster_auto_scale]
+}
 
 # ## TODO:
 # module "aws_auth" {
 #   source = "../../../modules/aws_auth"
 #   cluster_name = "staging-cluster"
-#   region = "ap-south-2"
+#   region = "ap-south-1"
 # }
 

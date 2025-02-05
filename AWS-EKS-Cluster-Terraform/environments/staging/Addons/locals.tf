@@ -8,5 +8,5 @@ locals {
   admin_user_name           = "manager"
   kubernetes_group_name     = ["admin"]
   manager_iam_role_name     = "eks-admin"
-  openid_connect_provider   = "https://oidc.eks.ap-south-1.amazonaws.com/id/CA246B998FF720A713D32B869263C5F2"
+  openid_connect_provider   = "https://oidc.eks.ap-south-1.amazonaws.com/id/B1F3BCC28FA17AE8D66FECAC229AA36B"
 }

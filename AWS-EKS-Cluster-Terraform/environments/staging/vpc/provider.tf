@@ -12,10 +12,10 @@ terraform {
     }
   }
 
-#   backend "s3" {
-#     bucket                  = "stateofterraform"
-#     key                     = "VPC/terraform.tfstate"
-#     region                  = "ap-south-1"
-#   }
+  backend "s3" {
+    region                  = "ap-south-1"
+    bucket                  = "stateofterraform"
+    key                     = "VPC/terraform.tfstate"
+  }
 }
 
