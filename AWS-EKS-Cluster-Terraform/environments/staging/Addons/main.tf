@@ -57,7 +57,7 @@ module "efs-csi-driver" {
 module "ingress-nginx-nlb" {
   source       = "../../../modules/ingress"
   cluster_name = local.cluster_name
-  vpc_id       = data.terraform_remote_state.cluster.outputs.VPC.vpc_id
+  vpc_id       = "vpc-0eb4c59214e88e72f" # Change the VPC ID
   depends_on   = [module.cluster_auto_scale]
 }
 
