@@ -7,30 +7,24 @@ set -e
 ENV="staging"
 WORK_DIR=$(pwd)
 
-PUBLIC_VPC="environments/$ENV/vpc/public/"
-PRIVATE_VPC="environments/$ENV/vpc/private/"
+VPC="environments/$ENV/vpc/"
 EKS_CLUSTER="environments/$ENV/EKS-cluster/"
 ADDONS="environments/$ENV/Addons/"
 
-if [ ! -d "$PUBLIC_VPC" ]; then
-    echo "Error: Environment directory '$PUBLIC_VPC' does not exist."
+if [ ! -d "$VPC" ]; then
+    echo "Error: Environment directory '$VPC' does not exist."
     exit 1
 fi
 
-if [ ! -d "$PRIVATE_VPC" ]; then
-    echo "Error: Environment directory '$PRIVATE_VPC' does not exist."
-    exit 1
-fi
+# if [ ! -d "$EKS_CLUSTER" ]; then
+#     echo "Error: Environment directory '$EKS_CLUSTER' does not exist."
+#     exit 1
+# fi
 
-if [ ! -d "$EKS_CLUSTER" ]; then
-    echo "Error: Environment directory '$EKS_CLUSTER' does not exist."
-    exit 1
-fi
-
-if [ ! -d "$ADDONS" ]; then
-    echo "Error: Environment directory '$ADDONS' does not exist."
-    exit 1
-fi
+# if [ ! -d "$ADDONS" ]; then
+#     echo "Error: Environment directory '$ADDONS' does not exist."
+#     exit 1
+# fi
 
 # Display options to the user
 echo "Terraform Operations Menu:"
@@ -44,32 +38,30 @@ read -p "Enter your option (1, 2): " OPTION
 case $OPTION in
     1)
         echo "Executing Initialize, Validate, Plan, and Apply steps..."
-        # Public_VPC
-        cd "$WORK_DIR"/"$PUBLIC_VPC"
-        # cd "$WORK_DIR"/"$PRIVATE_VPC"
+        # VPC
+        cd "$WORK_DIR"/"$VPC"
         echo 1 | /bin/sh ./run.sh
         # Cluster
-        cd "$WORK_DIR"/"$EKS_CLUSTER"
-        echo 1 | /bin/sh ./run.sh
-        # Addons
-        cd "$WORK_DIR"/"$ADDONS"
-        echo 1 | /bin/sh ./run.sh
+        # cd "$WORK_DIR"/"$EKS_CLUSTER"
+        # echo 1 | /bin/sh ./run.sh
+        # # Addons
+        # cd "$WORK_DIR"/"$ADDONS"
+        # echo 1 | /bin/sh ./run.sh
     ;;
 
     2)
         echo "Executing Destroy for Terraform-managed infrastructure..."
-        # Addons
-        cd "$WORK_DIR"/"$ADDONS"
-        echo 2 | /bin/sh ./run.sh
-        # Cluster
-        cd "$WORK_DIR"/"$EKS_CLUSTER"
-        echo 2 | /bin/sh ./run.sh
-        # Public_VPC
-        cd "$WORK_DIR"/"$PUBLIC_VPC"
-        # cd "$WORK_DIR"/"$PRIVATE_VPC"
+        # # Addons
+        # cd "$WORK_DIR"/"$ADDONS"
+        # echo 2 | /bin/sh ./run.sh
+        # # Cluster
+        # cd "$WORK_DIR"/"$EKS_CLUSTER"
+        # echo 2 | /bin/sh ./run.sh
+        # VPC
+        cd "$WORK_DIR"/"$VPC"
         echo 2 | /bin/sh ./run.sh
     ;;
-    
+
     *)
         echo "Error: Unknown option '$OPTION'. Please enter either 1 (Create) or 2 (Destroy)."
         exit 1

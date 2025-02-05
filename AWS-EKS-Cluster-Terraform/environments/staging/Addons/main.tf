@@ -23,20 +23,20 @@ module "openid_connect_provider" {
   url        = local.openid_connect_provider
 }
 
-module "dev_user" {
-  source              = "../../../modules/user/dev-user"
-  cluster_name        = local.cluster_name
-  dev_groups_name = local.dev_groups_name
-  dev_user_name       = local.dev_user_name
-}
+# module "dev_user" {
+#   source              = "../../../modules/user/dev-user"
+#   cluster_name        = local.cluster_name
+#   dev_groups_name = local.dev_groups_name
+#   dev_user_name       = local.dev_user_name
+# }
 
-module "manager_user" {
-  source                = "../../../modules/user/admin-user"
-  admin_user_name       = local.admin_user_name
-  cluster_name          = local.cluster_name
-  kubernetes_group_name = local.kubernetes_group_name
-  iam_role_name         = local.manager_iam_role_name
-}
+# module "manager_user" {
+#   source                = "../../../modules/user/admin-user"
+#   admin_user_name       = local.admin_user_name
+#   cluster_name          = local.cluster_name
+#   kubernetes_group_name = local.kubernetes_group_name
+#   iam_role_name         = local.manager_iam_role_name
+# }
 
 module "ebs-csi-driver" {
   source       = "../../../modules/ebs-csi-driver"
@@ -56,12 +56,12 @@ module "efs-csi-driver" {
 }
 
 ### ingress-nginx nlb
-module "ingress-nginx-nlb" {
-  source       = "../../../modules/ingress"
-  cluster_name = local.cluster_name
-  vpc_id       = data.terraform_remote_state.cluster.outputs.VPC.vpc_id
-  depends_on   = [module.cluster_auto_scale]
-}
+# module "ingress-nginx-nlb" {
+#   source       = "../../../modules/ingress"
+#   cluster_name = local.cluster_name
+#   vpc_id       = data.terraform_remote_state.cluster.outputs.VPC.vpc_id
+#   depends_on   = [module.cluster_auto_scale]
+# }
 
 # ## TODO:
 # module "aws_auth" {
