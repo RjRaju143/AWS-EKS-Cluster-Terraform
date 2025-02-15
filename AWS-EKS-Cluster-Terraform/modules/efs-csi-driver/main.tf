@@ -17,9 +17,9 @@ resource "aws_efs_file_system" "eks" {
   throughput_mode  = "bursting"
   encrypted        = true
 
-  # lifecycle_policy {
-  #   transition_to_ia = "AFTER_30_DAYS"
-  # }
+  lifecycle_policy {
+    transition_to_ia = "AFTER_30_DAYS"
+  }
 }
 
 resource "aws_efs_mount_target" "zone_a" {

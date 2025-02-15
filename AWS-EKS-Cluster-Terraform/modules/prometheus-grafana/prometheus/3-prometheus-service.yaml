@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service-external
+  namespace: monitoring
+spec:
+  selector: 
+    app: prometheus-server
+  type: LoadBalancer  
+  ports:
+    - port: 8080
+      targetPort: 9090 
+      nodePort: 30000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service-internal
+  namespace: monitoring  
+spec:
+  selector: 
+    app: prometheus-server
+  ports:
+    - port: 8080
+      targetPort: 9090 

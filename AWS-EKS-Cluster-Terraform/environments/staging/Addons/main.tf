@@ -46,25 +46,25 @@ module "ebs-csi-driver" {
 module "efs-csi-driver" {
   source                      = "../../../modules/efs-csi-driver"
   cluster_name                = local.cluster_name
-  cluster_security_group_id   = ["sg-0a65b0e972e1b2d5c"] # Change this to your EKS security group id
-  subnet_id_1                 = "subnet-0723c0569934e3666" # Change this to your subnet id
-  subnet_id_2                 = "subnet-0bb48b083fd985d90" # Change this to your subnet id
+  cluster_security_group_id   = local.cluster_security_group_id # Change this to your EKS security group id
+  subnet_id_1                 = local.subnet_id_1 # Change this to your subnet id
+  subnet_id_2                 = local.subnet_id_2 # Change this to your subnet id
   cluster_oidc_issuer         = module.openid_connect_provider.aws_iam_openid_connect_provider.url 
   cluster_oidc_issuer_arn     = module.openid_connect_provider.aws_iam_openid_connect_provider.url
 }
 
-## ingress-nginx nlb
+# ingress-nginx nlb
 module "ingress-nginx-nlb" {
   source       = "../../../modules/ingress"
   cluster_name = local.cluster_name
-  vpc_id       = "vpc-0eb4c59214e88e72f" # Change the VPC ID
+  vpc_id       = local.vpc_id # Change the VPC ID
   depends_on   = [module.cluster_auto_scale]
 }
 
-# ## TODO:
-# module "aws_auth" {
-#   source = "../../../modules/aws_auth"
-#   cluster_name = "staging-cluster"
-#   region = "ap-south-1"
-# }
+## TODO:
+module "aws_auth" {
+  source = "../../../modules/aws_auth"
+  cluster_name = "staging-cluster"
+  region = "ap-south-1"
+}
 

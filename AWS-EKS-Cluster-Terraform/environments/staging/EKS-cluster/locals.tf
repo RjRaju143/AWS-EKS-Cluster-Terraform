@@ -6,6 +6,6 @@ locals {
   instance_types     = ["t3.medium"]
   node_group_name    = "staging-cluster-general"
 
-  subnet1_id = "subnet-0723c0569934e3666"
-  subnet2_id = "subnet-0bb48b083fd985d90"
+  subnet1_id = "subnet-0e9a450cec6606fdf"
+  subnet2_id = "subnet-0b396881398efc750"
 }
