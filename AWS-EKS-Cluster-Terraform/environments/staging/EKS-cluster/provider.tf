@@ -1,5 +1,5 @@
 provider "aws" {
-  region     = local.region
+  region = local.region
 }
 
 terraform {
@@ -13,8 +13,8 @@ terraform {
   }
 
   backend "s3" {
-    bucket                  = "stateofterraform"
-    key                     = "EKS/terraform.tfstate"
-    region                  = "ap-south-1"
+    bucket = "stateofterraform"
+    key    = "EKS/terraform.tfstate"
+    region = "ap-south-1"
   }
 }

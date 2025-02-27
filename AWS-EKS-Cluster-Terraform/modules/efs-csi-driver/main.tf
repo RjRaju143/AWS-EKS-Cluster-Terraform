@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "efs_csi_driver" {
     effect  = "Allow"
 
     condition {
-      test     = "StringEquals"
+      test = "StringEquals"
       # variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
       variable = "${replace(var.cluster_oidc_issuer, "https://", "")}:sub"
       values   = ["system:serviceaccount:kube-system:efs-csi-controller-sa"]

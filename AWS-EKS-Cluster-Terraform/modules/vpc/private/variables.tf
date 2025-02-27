@@ -32,14 +32,14 @@ variable "private_subnet2_cidr" {
 variable "igw_cidr" {
   description = "The CIDR block for igw_cidr"
   type        = string
-  default = "0.0.0.0/0"
+  default     = "0.0.0.0/0"
 }
 
 # nat_cidr
 variable "nat_cidr" {
   description = "The CIDR block for igw_cidr"
   type        = string
-  default = "0.0.0.0/0"
+  default     = "0.0.0.0/0"
 }
 
 ###

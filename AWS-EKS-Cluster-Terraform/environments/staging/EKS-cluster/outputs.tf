@@ -1,6 +1,6 @@
 output "aws_region" {
   description = "The AWS region where resources are created"
-  value       = "${local.region}"
+  value       = local.region
 }
 
 output "eks_cluster_id" {

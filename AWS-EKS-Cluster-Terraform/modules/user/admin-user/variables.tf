@@ -18,6 +18,6 @@ variable "cluster_name" {
 
 variable "iam_role_name" {
   description = "The name of eks iam role"
-  type = string
-  default = "eks-admin"
+  type        = string
+  default     = "eks-admin"
 }

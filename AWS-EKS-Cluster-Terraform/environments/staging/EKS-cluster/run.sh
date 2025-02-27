@@ -27,6 +27,9 @@ case $OPTION in
 
         echo "Initializing Terraform..."
         terraform init
+
+        echo "Formatting Terraform..."
+        terraform fmt
         
         echo "Validating Terraform configuration..."
         terraform validate

@@ -1,3 +1,3 @@
 variable "url" {
-  type        = string
+  type = string
 }

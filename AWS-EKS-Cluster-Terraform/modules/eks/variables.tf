@@ -47,7 +47,7 @@ variable "environment" {
 variable "capacity_type" {
   description = "capacity type"
   type        = string
-  default     =  "ON_DEMAND"
+  default     = "ON_DEMAND"
 }
 
 variable "disk_size" {
@@ -55,3 +55,16 @@ variable "disk_size" {
   type        = number
   default     = 20
 }
+
+variable "endpoint_private_access" {
+  description = "endpoint_private_access"
+  type        = bool
+  default     = false
+}
+
+variable "endpoint_public_access" {
+  description = "endpoint_public_access"
+  type        = bool
+  default     = true
+}
+

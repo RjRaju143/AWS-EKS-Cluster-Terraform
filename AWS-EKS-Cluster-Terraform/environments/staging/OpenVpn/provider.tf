@@ -15,7 +15,6 @@ terraform {
   backend "s3" {
     region = "ap-south-1"
     bucket = "stateofterraform"
-    key    = "VPC/terraform.tfstate"
+    key    = "OpenVpn/terraform.tfstate"
   }
 }
-
