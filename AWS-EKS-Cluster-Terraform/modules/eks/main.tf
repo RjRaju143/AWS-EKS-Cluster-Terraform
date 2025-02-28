@@ -78,3 +78,20 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.nodes.name
 }
+
+data "aws_eks_cluster" "eks" {
+  name = aws_eks_cluster.eks.name
+}
+
+data "aws_security_group" "eks_sg" {
+  id = data.aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id
+}
+
+resource "aws_security_group_rule" "eks_inbound" {
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 65535
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.eks_sg.id
+  source_security_group_id = var.vpn_source_security_group_id
+}

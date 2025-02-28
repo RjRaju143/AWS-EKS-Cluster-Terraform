@@ -68,3 +68,7 @@ variable "endpoint_public_access" {
   default     = true
 }
 
+variable "vpn_source_security_group_id" {
+  default = "vpn security group id"
+  type    = string
+}

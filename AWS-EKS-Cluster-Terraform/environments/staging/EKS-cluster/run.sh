@@ -39,7 +39,7 @@ case $OPTION in
         
         echo "Applying Terraform changes..."
         terraform apply "tfplan"
-        
+
         echo "Terraform apply completed successfully."
     ;;
     
