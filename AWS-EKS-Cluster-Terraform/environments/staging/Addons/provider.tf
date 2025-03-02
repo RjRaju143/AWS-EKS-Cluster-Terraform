@@ -34,9 +34,9 @@ terraform {
   required_version = ">= 1.0.0"
 
   backend "s3" {
-    bucket                  = "stateofterraform"
-    key                     = "Addons/terraform.tfstate"
-    region                  = "ap-south-1"
+    bucket = "stateofterraform"
+    key    = "Addons/terraform.tfstate"
+    region = "ap-south-1"
   }
 }
 

@@ -19,15 +19,15 @@ module "cluster_auto_scale" {
 }
 
 module "openid_connect_provider" {
-  source     = "../../../modules/openid_connect_provider"
-  url        = local.openid_connect_provider
+  source = "../../../modules/openid_connect_provider"
+  url    = local.openid_connect_provider
 }
 
 module "dev_user" {
-  source              = "../../../modules/user/dev-user"
-  cluster_name        = local.cluster_name
+  source          = "../../../modules/user/dev-user"
+  cluster_name    = local.cluster_name
   dev_groups_name = local.dev_groups_name
-  dev_user_name       = local.dev_user_name
+  dev_user_name   = local.dev_user_name
 }
 
 module "manager_user" {
@@ -44,13 +44,13 @@ module "ebs-csi-driver" {
 }
 
 module "efs-csi-driver" {
-  source                      = "../../../modules/efs-csi-driver"
-  cluster_name                = local.cluster_name
-  cluster_security_group_id   = local.cluster_security_group_id # Change this to your EKS security group id
-  subnet_id_1                 = local.subnet_id_1 # Change this to your subnet id
-  subnet_id_2                 = local.subnet_id_2 # Change this to your subnet id
-  cluster_oidc_issuer         = module.openid_connect_provider.aws_iam_openid_connect_provider.url 
-  cluster_oidc_issuer_arn     = module.openid_connect_provider.aws_iam_openid_connect_provider.url
+  source                    = "../../../modules/efs-csi-driver"
+  cluster_name              = local.cluster_name
+  cluster_security_group_id = local.cluster_security_group_id # Change this to your EKS security group id
+  subnet_id_1               = local.subnet_id_1               # Change this to your subnet id
+  subnet_id_2               = local.subnet_id_2               # Change this to your subnet id
+  cluster_oidc_issuer       = module.openid_connect_provider.aws_iam_openid_connect_provider.url
+  cluster_oidc_issuer_arn   = module.openid_connect_provider.aws_iam_openid_connect_provider.url
 }
 
 # ingress-nginx nlb
@@ -61,10 +61,13 @@ module "ingress-nginx-nlb" {
   depends_on   = [module.cluster_auto_scale]
 }
 
-## TODO:
+module "harbor-registry" {
+  source = "../../../modules/Harbor-Docker-Registry"
+}
+
 module "aws_auth" {
-  source = "../../../modules/aws_auth"
+  source       = "../../../modules/aws_auth"
   cluster_name = "staging-cluster"
-  region = "ap-south-1"
+  region       = "ap-south-1"
 }
 
