@@ -12,12 +12,12 @@ resource "helm_release" "harbor" {
 
   set {
     name  = "expose.ingress.hosts.core"
-    value = "harbor.cluster.absol.in"
+    value = "harbor.registy.techboyraju.com"
   }
 
   set {
     name  = "externalURL"
-    value = "http://harbor.cluster.absol.in"
+    value = "http://harbor.registy.techboyraju.com"
   }
 
   depends_on = [kubernetes_namespace.harbor]
@@ -38,12 +38,12 @@ resource "kubernetes_ingress_v1" "harbor_ingress" {
 
   spec {
     tls {
-      hosts       = ["harbor.cluster.absol.in"]
+      hosts       = ["harbor.registy.techboyraju.com"]
       secret_name = "letsencrypt-secret"
     }
 
     rule {
-      host = "harbor.cluster.absol.in"
+      host = "harbor.registy.techboyraju.com"
       http {
         path {
           path      = "/api/"

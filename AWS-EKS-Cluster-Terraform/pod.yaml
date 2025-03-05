@@ -110,7 +110,7 @@
 #   labels:
 #     app: postgres
 # spec:
-#   replicas: 100
+#   replicas: 1
 #   selector:
 #     matchLabels:
 #       app: postgres
@@ -144,8 +144,9 @@
 #     - protocol: TCP
 #       port: 5432
 #       targetPort: 5432
-#   type: LoadBalancer
+#   # type: LoadBalancer
 #   # type: ClusterIP
+#   type: NodePort
 ###################################
 apiVersion: apps/v1
 kind: Deployment

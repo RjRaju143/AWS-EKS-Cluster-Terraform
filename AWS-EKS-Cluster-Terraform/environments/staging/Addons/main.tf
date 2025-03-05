@@ -1,4 +1,4 @@
-#### Addons
+### Addons
 module "metrics_server" {
   source       = "../../../modules/metrics-server"
   cluster_name = local.cluster_name
@@ -53,7 +53,7 @@ module "efs-csi-driver" {
   cluster_oidc_issuer_arn   = module.openid_connect_provider.aws_iam_openid_connect_provider.url
 }
 
-# ingress-nginx nlb
+##### ingress-nginx nlb
 module "ingress-nginx-nlb" {
   source       = "../../../modules/ingress"
   cluster_name = local.cluster_name

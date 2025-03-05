@@ -13,7 +13,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "stateofterraform"
+    bucket = "staging-cluter-state"
     key    = "EKS/terraform.tfstate"
     region = "ap-south-1"
   }
