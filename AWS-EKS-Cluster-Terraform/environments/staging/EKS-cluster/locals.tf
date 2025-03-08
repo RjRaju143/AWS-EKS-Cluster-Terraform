@@ -5,7 +5,7 @@ locals {
   cluster_version              = "1.32" # or your preferred EKS version
   instance_types               = ["t3.medium"]
   node_group_name              = "staging-cluster-general"
-  subnet1_id                   = "subnet-096aeb1d6c4497f01"
-  subnet2_id                   = "subnet-0bc431a9a0bb2943c"
-  vpn_source_security_group_id = "sg-043d6bd7d65c00d71"
+  subnet1_id                   = "subnet-0997be57784794d15"
+  subnet2_id                   = "subnet-019dd6f3adcaac5eb"
+  vpn_source_security_group_id = "sg-031364a8b79445b84"
 }

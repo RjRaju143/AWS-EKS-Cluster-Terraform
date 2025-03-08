@@ -6,7 +6,7 @@ module "eks_cluster" {
   endpoint_private_access      = true
   endpoint_public_access       = false
   desired_size                 = 1
-  max_size                     = 3
+  max_size                     = 5
   min_size                     = 1
   instance_types               = local.instance_types
   node_group_name              = local.node_group_name

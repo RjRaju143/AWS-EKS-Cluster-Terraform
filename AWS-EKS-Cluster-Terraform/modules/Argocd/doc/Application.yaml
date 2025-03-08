@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx # update the deploy application name
+  namespace: argocd # argocd namespace
+spec:
+  destination: # target cluster
+    server: https://kubernetes.default.svc # k8s internal service cluster API
+    namespace: default # deploy application namespace
+  source: # k8s manifest git repo
+    repoURL: "git-repo-url" # update with git repo
+    path: path/of/the/manifest/files # update with k8s manifest path
+    targetRevision: HEAD # latest commit
+  project: default # argocd project name # default is the project name # we can create our own project env.. on argocd
+  syncPolicy:
+    automated:
+      prune: true # If checked, Argo will delete resources if they are no longer defined in Git
+      selfHeal: true # recreate if any error occur
+
