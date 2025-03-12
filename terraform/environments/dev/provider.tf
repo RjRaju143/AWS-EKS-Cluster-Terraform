@@ -14,7 +14,8 @@ terraform {
 
   backend "s3" {
     region = "ap-south-1"
-    bucket = "staging-cluter-state"
-    key    = "OpenVpn/terraform.tfstate"
+    bucket = "devclusterstate"
+    key    = "terraform.tfstate"
   }
 }
+

@@ -14,7 +14,7 @@ terraform {
 
   backend "s3" {
     region = "ap-south-1"
-    bucket = "staging-cluter-state"
+    bucket = "staging-cluster-state"
     key    = "VPC/terraform.tfstate"
   }
 }

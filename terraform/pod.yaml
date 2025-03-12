@@ -170,6 +170,13 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              cpu: "800m"  # Request 250 millicores (0.25 vCPU)
+              memory: "1024Mi"  # Request 256 MB of memory
+            limits:
+              cpu: "1000m"  # Limit to 500 millicores (0.5 vCPU)
+              memory: "2048Mi"  # Limit to 512 MB of memory
 ---
 apiVersion: v1
 kind: Service
@@ -182,6 +189,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-  # type: LoadBalancer
-  # type: ClusterIP
-  type: NodePort
+  type: NodePort  # Service type (can change to LoadBalancer if needed)
