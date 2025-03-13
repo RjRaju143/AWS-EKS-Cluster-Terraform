@@ -42,3 +42,30 @@ module "eks_cluster" {
   vpn_source_security_group_id = module.OpenVpn.security_group.id                                             # subnet ID of public Instance (JumpBox or Bastion Host or VPN Server) 
 }
 
+### Addons
+#####
+module "metrics_server" {
+  source       = "../../modules/metrics-server"
+  cluster_name = module.eks_cluster.eks_cluster_name #local.cluster_name
+  depends_on   = [module.eks_cluster]
+}
+
+module "pod_identity" {
+  source        = "../../modules/pod-identity"
+  cluster_name  = module.eks_cluster.eks_cluster_name
+  addon_name    = local.addon_name
+  addon_version = local.addon_version
+  depends_on    = [module.eks_cluster]
+}
+
+module "cluster_auto_scale" {
+  source       = "../../modules/cluster-auto-scale"
+  cluster_name = module.eks_cluster.eks_cluster_name
+  region       = local.region
+  depends_on   = [module.metrics_server]
+}
+
+module "openid_connect_provider" {
+  source = "../../modules/openid_connect_provider"
+  url    = module.eks_cluster.oidc_issuer #local.openid_connect_provider
+}
