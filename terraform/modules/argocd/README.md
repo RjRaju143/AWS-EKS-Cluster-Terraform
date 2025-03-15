@@ -122,3 +122,19 @@
 2. **Create New Application:**
 
    Inside the ArgoCD UI, select "Create New App" and fill in the details according to your application and deployment needs.
+
+---
+
+## Helm
+
+`helm repo add argo https://argoproj.github.io/argo-helm`
+
+`helm repo update`
+
+`helm search repo argocd`
+
+`helm show values argo/argocd-image-updater --version 0.12.0 > argocd-image-updater.yaml`
+
+`kubectl get secrets argocd-initial-admin-secret -n argocd -o yaml`
+
+`kubectl port-forward svc/argocd-server -n argocd 8080:80`

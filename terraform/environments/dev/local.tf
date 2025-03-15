@@ -30,8 +30,4 @@ locals {
   min_size                = 1
   instance_types          = ["t3.medium"]
   node_group_name         = "dev-cluster-general"
-
-  ### Addons
-  addon_name    = "eks-pod-identity-agent"
-  addon_version = "v1.3.0-eksbuild.1"
 }
