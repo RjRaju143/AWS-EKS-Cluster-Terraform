@@ -13,6 +13,11 @@ resource "aws_eks_node_group" "general" {
     min_size     = var.min_size
   }
 
+  remote_access {
+    # ec2_ssh_key = file("${path.module}/ssh-key.pub")
+    ec2_ssh_key = var.key_name
+  }
+
   update_config {
     max_unavailable = 1
   }

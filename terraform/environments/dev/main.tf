@@ -14,15 +14,21 @@ module "vpc" {
   nat_cidr             = local.nat_cidr
 }
 
+resource "aws_key_pair" "ssh_key" {
+  key_name   = "staging-cluster"
+  public_key = file("../ssh-key/staging-cluster.pub")
+}
+
 ## OpenVPN
 module "OpenVpn" {
   source           = "../../modules/OpenVpn"
   vpc_id           = module.vpc.vpc[0].vpc_main.id       #"vpc-0aaf65c19284fa30e" #module.vpc.vpc_main.id
   subnet_id        = module.vpc.vpc[0].public_subnet1_id #"subnet-0d097a2dcf4c876e3" #module.vpc.public_zone1.id
   vpn_server_name  = local.vpn_server_name               #"openVpn" #local.vpn_name
-  key_name         = local.key_name
   ami_id           = local.ami_id
   vpn_server_ports = local.vpn_server_ports
+  key_name         = aws_key_pair.ssh_key.key_name
+  depends_on       = [aws_key_pair.ssh_key]
 }
 
 ### EKS
@@ -40,4 +46,5 @@ module "eks_cluster" {
   node_group_name              = local.node_group_name
   subnet_ids                   = [module.vpc.vpc[0].private_subnet1_id, module.vpc.vpc[0].private_subnet2_id] # Use subnet IDs based on whether it's a private or public VPC
   vpn_source_security_group_id = module.OpenVpn.security_group.id                                             # subnet ID of public Instance (JumpBox or Bastion Host or VPN Server) 
+  key_name                     = aws_key_pair.ssh_key.key_name
 }

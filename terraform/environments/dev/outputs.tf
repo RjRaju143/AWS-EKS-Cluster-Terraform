@@ -1,27 +1,28 @@
-## VPC
+# ## VPC
 output "vpn_id" {
   value = module.vpc.vpc[0].vpc_main.id
 }
 
 output "public_subnet_id1" {
-  value = module.vpc.vpc[0].public_subnet1_id
+  value = try(module.vpc.vpc[0].public_subnet1_id, null)
 }
 
 output "public_subnet_id2" {
-  value = module.vpc.vpc[0].public_subnet2_id
+  value = try(module.vpc.vpc[0].public_subnet2_id, null)
 }
 
 output "private_subnet_id1" {
-  value = module.vpc.vpc[0].private_subnet2_id
+  value = try(module.vpc.vpc[0].private_subnet2_id, null)
 }
 
 output "private_subnet_id2" {
-  value = module.vpc.vpc[0].private_subnet2_id
+  value = try(module.vpc.vpc[0].private_subnet2_id, null)
 }
+
 
 #### OpenVPN
 output "OpenVpn_eip" {
-  value = module.OpenVpn.eip.public_ip
+  value = try(module.OpenVpn.eip.public_ip, null)
 }
 
 output "OpenVpn_security_group_id" {

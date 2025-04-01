@@ -72,3 +72,8 @@ variable "vpn_source_security_group_id" {
   default = "vpn security group id"
   type    = string
 }
+
+variable "key_name" {
+  description = "The name of the VPN Server SSH key pair"
+  type        = string
+}

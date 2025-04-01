@@ -3,9 +3,7 @@ resource "aws_instance" "vpn_server" {
   instance_type = "t2.small"
   key_name      = var.key_name
   subnet_id     = var.subnet_id
-
   vpc_security_group_ids = [aws_security_group.vpn_security_group.id]
-
   tags = {
     Name        = var.vpn_server_name
     Environment = "Development"

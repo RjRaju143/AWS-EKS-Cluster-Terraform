@@ -16,7 +16,6 @@ locals {
 
   ### OpenVPN
   vpn_server_name  = "OpenVPN"
-  key_name         = "ap-south-1"
   ami_id           = "ami-01614d815cf856337"
   vpn_server_ports = [22, 443, 943, 945, 1194]
 
