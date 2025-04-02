@@ -1,5 +1,5 @@
 # ## VPC
-output "vpn_id" {
+output "vpc_id" {
   value = module.vpc.vpc[0].vpc_main.id
 }
 
@@ -12,7 +12,7 @@ output "public_subnet_id2" {
 }
 
 output "private_subnet_id1" {
-  value = try(module.vpc.vpc[0].private_subnet2_id, null)
+  value = try(module.vpc.vpc[0].private_subnet1_id, null)
 }
 
 output "private_subnet_id2" {

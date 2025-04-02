@@ -12,4 +12,5 @@ module "eks_cluster" {
   node_group_name              = local.node_group_name
   subnet_ids                   = [local.subnet1_id, local.subnet2_id] # Use subnet IDs based on whether it's a private or public VPC
   vpn_source_security_group_id = local.vpn_source_security_group_id   # subnet ID of public Instance (JumpBox or Bastion Host or VPN Server) 
+  key_name                     = local.key_name
 }

@@ -1,3 +1,8 @@
+resource "aws_key_pair" "ssh_key" {
+  key_name   = "staging-cluster"
+  public_key = file("../../ssh-key/staging-cluster.pub")
+}
+
 module "vpc" {
   source               = "../../../modules/vpc"
   is_private           = local.is_private #true # Change to false if you want a public VPC Default is false (public VPC)

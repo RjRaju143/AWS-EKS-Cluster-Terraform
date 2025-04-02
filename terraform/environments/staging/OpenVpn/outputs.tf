@@ -1,28 +1,27 @@
-output "aws_region" {
-  description = "The AWS region where resources are created"
-  value       = local.region
+output "OpenVpn_eip" {
+  value = try(module.OpenVpn.eip.public_ip, null)
 }
 
-output "vpn_instance_id" {
+output "OpenVpn_security_group_id" {
+  value = module.OpenVpn.security_group.id
+}
+
+output "OpenVpn_instance_id" {
   value = module.OpenVpn.instance.id
 }
 
-output "public_ip" {
+output "OpenVpn_public_ip" {
   value = module.OpenVpn.instance.public_ip
 }
 
-output "private_ip" {
+output "OpenVPN_private_ip" {
   value = module.OpenVpn.instance.private_ip
 }
 
-output "instance_type" {
+output "OpenVPN_instance_type" {
   value = module.OpenVpn.instance.instance_type
 }
 
-output "availability_zone" {
+output "OpenVPN_availability_zone" {
   value = module.OpenVpn.instance.availability_zone
-}
-
-output "eip" {
-  value = module.OpenVpn.eip.public_ip
 }
